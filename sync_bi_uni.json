@@ -1,0 +1,94 @@
+{
+    "title": "Topology Mediated Quantum Synchronization and Correlation in a Coupled Optomechanical Oscillator",
+    "authors": ["Subhadeep Chakraborty", "Sampreet Kalita", "Amarendra Kumar Sarma"],
+    "models": {
+        "bi": { 
+            "00": { 
+                "name": "Simple Bidirectional",
+                "params": {
+                    "omega_m": 1,
+                    "Delta_0": 1,
+                    "kappa": [0.15, 0.15],
+                    "gamma": [0.005, 0.005],
+                    "g_0": [0.005, 0.005],
+                    "delta": 0.004,
+                    "A_l": 52,
+                    "lamb": 0.075,
+                    "n_th": [0, 0]
+                }
+            }
+        },
+        "uni": { 
+            "00": { 
+                "name": "Simple Unidirectional",
+                "params": {
+                    "omega_m": 1,
+                    "Delta_0": 1,
+                    "kappa": [0.15, 0.15],
+                    "gamma": [0.005, 0.005],
+                    "g_0": [0.005, 0.005],
+                    "delta": 0.0039,
+                    "A_l": 52,
+                    "eta": 0.75,
+                    "n_th": [0, 0]
+                }
+            }
+        }
+    },
+    "scripts": {
+        "dyna_params": {
+            "func": "dynamics_measure",
+            "solver_type": "complex",
+            "cache": true,
+            "dir_name": "data",
+            "T": {
+                "name": "t",
+                "unit": "",
+                "min": 0,
+                "max": 100000,
+                "steps": 1000001
+            }
+        },
+        "meas_params": {
+            "func": "measures_1D",
+            "type": "diff",
+            "code": "phase_match_cos",
+            "name": "Phase Difference (Cosine Matching)",
+            "arg_str": "pos",
+            "avg_mode": "range",
+            "avg_type": "min_max",
+            "span": 1000,
+            "start": 500000,
+            "stop": 600000,
+            "thres_mode": "max_min",
+            "num_modes": 4,
+            "mode_i": 1,
+            "mode_j": 3,
+            "X": {
+                "name": "delta",
+                "unit": "",
+                "min": 0.00,
+                "max": 0.01,
+                "steps": 11
+            },
+            "Y": {
+                "name": "eta",
+                "unit": "",
+                "min": 0.5,
+                "max": 1.0,
+                "steps": 11
+            }
+        },
+        "plot": true,
+        "plot_params": {
+            "title": "Quantum Phase Synchronization vs Time",
+            "x_label": "\\omega_{m} t",
+            "y_label": "S_p",
+            "legend": "\\delta = 0.0039",
+            "type": "line",
+            "color": "r",
+            "color_grad": "br_light",
+            "linestyle": "-"
+        }
+    }
+}
