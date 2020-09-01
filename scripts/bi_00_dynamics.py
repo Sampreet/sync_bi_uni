@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Script to plot measure dynamics."""
+"""Script to plot dynamics."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2020-08-17'
+__updated__ = '2020-08-25'
 
 # dependencies 
 import json
@@ -28,7 +28,7 @@ with open('sync_bi_uni.json') as data_file:
     data = json.load(data_file)
 # extract model parameters
 model_params = data['models']['bi']['00']['params']
-# extract dynamics parameters
+# extract dynamics data
 script_data = data['scripts']
 
 # initialize model

@@ -10,7 +10,7 @@
                     "Delta_0": 1,
                     "kappa": [0.15, 0.15],
                     "gamma": [0.005, 0.005],
-                    "g_0": [0.005, 0.005],
+                    "g_0":   [0.005, 0.005],
                     "delta": 0.004,
                     "A_l": 52,
                     "lamb": 0.075,
@@ -27,7 +27,7 @@
                     "kappa": [0.15, 0.15],
                     "gamma": [0.005, 0.005],
                     "g_0": [0.005, 0.005],
-                    "delta": 0.0039,
+                    "delta": 0.008,
                     "A_l": 52,
                     "eta": 0.75,
                     "n_th": [0, 0]
@@ -45,21 +45,20 @@
                 "name": "t",
                 "unit": "",
                 "min": 0,
-                "max": 100000,
-                "steps": 1000001
+                "max": 10000,
+                "steps": 100001
             }
         },
         "meas_params": {
             "func": "measures_1D",
-            "type": "diff",
-            "code": "phase_match_cos",
+            "type": "corr",
+            "code": "sync_phase",
             "name": "Phase Difference (Cosine Matching)",
-            "arg_str": "pos",
             "avg_mode": "range",
             "avg_type": "min_max",
-            "span": 1000,
-            "start": 500000,
-            "stop": 600000,
+            "span": 10000,
+            "start": 50000,
+            "stop": 60000,
             "thres_mode": "max_min",
             "num_modes": 4,
             "mode_i": 1,
@@ -67,9 +66,9 @@
             "X": {
                 "name": "delta",
                 "unit": "",
-                "min": 0.00,
-                "max": 0.01,
-                "steps": 11
+                "min": 0.002,
+                "max": 0.004,
+                "steps": 21
             },
             "Y": {
                 "name": "eta",
@@ -79,12 +78,12 @@
                 "steps": 11
             }
         },
-        "plot": true,
+        "plot": false,
         "plot_params": {
-            "title": "Quantum Phase Synchronization vs Time",
-            "x_label": "\\omega_{m} t",
-            "y_label": "S_p",
-            "legend": "\\delta = 0.0039",
+            "title": "Quantum Phase Synchronization vs Detuning",
+            "x_label": "$\\delta$",
+            "y_label": "$S_p$",
+            "legend": "$\\kappa = 0.15$",
             "type": "line",
             "color": "r",
             "color_grad": "br_light",
