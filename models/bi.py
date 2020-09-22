@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Models to simulate a bidirectionally-coupled configuration of optomechanical systems"""
+"""Models to simulate a bidirectionally-coupled configuration of optomechanical systems."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2020-08-15'
+__updated__ = '2020-09-01'
 
 # dependencies
 import numpy as np
-import os
-import scipy.integrate as si
 
 class Model00(object):
     """Class containing the model and parameter generation function for the bidirectionally-coupled configuration of optomechanical cavities without transformation.
@@ -25,20 +23,14 @@ class Model00(object):
     CODE : str
         Short code for the model
 
-    p : list
+    p : dict
         Parameters for the model.
-
-    v : list
-        Initial values of variables.
-
-    c : list
-        Constant parameters.
     """
     
     # class attributes
     NAME = 'Simple Bidirectional'
     CODE = 'bi_00'
-    p = []
+    p = {}
 
     def __init__(self, model_params):
         """Class constructor for Model.

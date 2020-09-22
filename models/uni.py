@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Models to simulate a unidirectionally-coupled configuration of optomechanical systems"""
+"""Models to simulate a unidirectionally-coupled configuration of optomechanical systems."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-04'
-__updated__ = '2020-08-17'
+__updated__ = '2020-09-01'
 
 # dependencies
 import numpy as np
-import os
 import scipy.linalg as sl
 
 class Model00(object):
@@ -25,14 +24,14 @@ class Model00(object):
     CODE : str
         Short code for the model
 
-    p : list
+    p : dict
         Parameters for the model.
     """
     
     # class attributes
     NAME = 'Simple Unidirectional'
     CODE = 'uni_00'
-    p = []
+    p = {}
 
     def __init__(self, model_params):
         """Class constructor for Model.
@@ -178,11 +177,11 @@ class Model00(object):
         # cavity detuning
         Delta_0     = self.p['Delta_0']
         # optical mode decay rates
-        arr_kappa   = self.p['kappa']
+        arr_kappa   = self.p['kappas']
         # mechanical mode decay rates
-        arr_gamma   = self.p['gamma']
+        arr_gamma   = self.p['gammas']
         # coupling contants
-        arr_g_0     = self.p['g_0']
+        arr_g_0     = self.p['g_0s']
         # mechanical detuning
         delta       = self.p['delta']
         # laser drive amplitude
@@ -190,7 +189,7 @@ class Model00(object):
         # transmission loss coefficient
         eta         = self.p['eta']
         # mean thermal occupancy number
-        arr_n_th    = self.p['n_th']
+        arr_n_th    = self.p['n_ths']
 
         # update frequencies
         arr_omega_m = [omega_m, omega_m + delta]
@@ -288,11 +287,11 @@ class Model00(object):
         # cavity detuning
         Delta_0     = self.p['Delta_0']
         # optical mode decay rates
-        arr_kappa   = self.p['kappa']
+        arr_kappa   = self.p['kappas']
         # mechanical mode decay rates
-        arr_gamma   = self.p['gamma']
+        arr_gamma   = self.p['gammas']
         # coupling contants
-        arr_g_0     = self.p['g_0']
+        arr_g_0     = self.p['g_0s']
         # mechanical detuning
         delta       = self.p['delta']
         # transmission loss coefficient
@@ -337,11 +336,11 @@ class Model00(object):
 
     def get_antisync_condition(self, arr_alpha):
         # optical mode decay rates
-        arr_kappa   = self.p['kappa']
+        arr_kappa   = self.p['kappas']
         # mechanical mode decay rates
-        arr_gamma   = self.p['gamma']
+        arr_gamma   = self.p['gammas']
         # coupling contants
-        arr_g_0     = self.p['g_0']
+        arr_g_0     = self.p['g_0s']
         # mechanical detuning
         delta       = self.p['delta']
         # mechanical detuning
@@ -367,11 +366,11 @@ class Model00(object):
 
     def get_num_modes_approx(self, arr_alpha):
         # optical mode decay rates
-        arr_kappa   = self.p['kappa']
+        arr_kappa   = self.p['kappas']
         # mechanical mode decay rates
-        arr_gamma   = self.p['gamma']
+        arr_gamma   = self.p['gammas']
         # coupling contants
-        arr_g_0     = self.p['g_0']
+        arr_g_0     = self.p['g_0s']
         # mechanical detuning
         delta       = self.p['delta']
         # mechanical detuning
