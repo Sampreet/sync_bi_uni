@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Script to plot measure dynamics."""
+"""Script to plot measure."""
 
 __authors__ = ['Sampreet Kalita']
-__created__ = '2020-09-22'
-__updated__ = '2020-09-22'
+__created__ = '2020-05-01'
+__updated__ = '2020-08-25'
 
-# dependencies  
+# dependencies 
 import json
-import numpy as np
 import os 
 import sys
-import scipy.integrate as si
-import matplotlib.pyplot as plt
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'qom')))
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
+
 # import libraries
-from qom.wrappers import dynamics
-from qom.utils import axis
+from qom.wrappers import measures
 
 # import model
 from models import uni_x
@@ -37,5 +34,5 @@ script_data = data['scripts']
 # initialize model
 model = uni_x.Model00(model_data)
 
-# calculate dynamics
-dynamics.calculate(model, script_data)
+# calculate the system dynamics
+M, Thres, Axes = measures.calculate(model, script_data)

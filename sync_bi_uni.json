@@ -42,7 +42,7 @@
             "func": "dynamics_measure",
             "solver_type": "complex",
             "cache": true,
-            "dir": "data_test",
+            "dir": "data_list",
             "T": {
                 "var": "t",
                 "unit": "",
@@ -52,7 +52,7 @@
             }
         },
         "meas_params": {
-            "func": "measures_1D",
+            "func": "measures_2D",
             "type": "corr",
             "code": "sync_phase",
             "name": "Phase Difference (Cosine Matching)",
@@ -69,27 +69,34 @@
                 "var": "delta",
                 "label": "\\delta",
                 "unit": "",
-                "min": 0.001,
-                "max": 0.003,
-                "steps": 2
+                "min": 0.00,
+                "max": 0.01,
+                "steps": 11
             },
             "Y": {
                 "var": "eta",
+                "label": "\\eta",
                 "unit": "",
-                "min": 0.5,
+                "min": 0.75,
                 "max": 1.0,
-                "steps": 11
+                "steps": 2,
+                "colors": ["b", "k"],
+                "linestyles": ["-", "-"],
+                "sizes": [100, 50]
             }
         },
         "plot": true,
         "plot_params": {
+            "progress": true,
             "title": "Quantum Phase Synchronization vs Detuning",
             "x_label": "$\\delta$",
             "y_label": "$S_p$",
-            "type": "line",
+            "type": "pcolormesh",
             "color": "r",
-            "color_grad": "br_light",
-            "linestyle": "-"
+            "size": 100,
+            "linestyle": "-",
+            "legend": "asdf",
+            "color_grad": "br_light"
         }
     }
 }

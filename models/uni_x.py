@@ -62,7 +62,7 @@ class Model00():
     def params(self, params):
         self.__params = params
 
-    def f_complex(self, t, v, c):
+    def f_multi_complex(self, t, v, c):
         """Model function for the rate equations of the modes and correlations.
         
         The variables are complex-valued, hence the model requires a complex-valued integrator.
@@ -150,26 +150,30 @@ class Model00():
                 # mechanical momentum quadrature
                 _Drifts[i][4 * j + 3][4 * j + 0] = 2 * np.real(_g)
                 _Drifts[i][4 * j + 3][4 * j + 1] = 2 * np.imag(_g)
-        
-        # convert to numpy array
-        _Coeffs = np.array(_Coeffs)
-        _Drifts = np.array(_Drifts)
 
-        rate_modes = np.tensordot(_Coeffs, _modes, axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose() + _consts
+        # # tensordot
+        # rate_modes = np.tensordot(_Coeffs, _modes, axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose() + _consts
+        # AV = np.tensordot(_Drifts, _Corrs, axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose(2, 0, 1)
+        # VAT = np.tensordot(_Corrs, np.transpose(_Drifts, (0, 2, 1)), axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose(2, 0, 1)
+        # rate_Corrs = (AV + VAT + _Noises).reshape((_n_s, 4 * _n_m * _n_m))
 
-        AV = np.tensordot(_Drifts, _Corrs, axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose(2, 0, 1)
+        # list comprehension
+        rate_modes = [np.dot(_Coeffs[i], _modes[i]) + _consts[i] for i in range(_n_s)]
+        rate_Corrs = [(np.dot(_Drifts[i], _Corrs[i]) + _Corrs[i].dot(np.transpose(_Drifts[i])) + _Noises[i]).ravel() for i in range(_n_s)]
 
-        VAT = np.tensordot(_Corrs, _Drifts.transpose(0, 2, 1), axes=((2,), (1,))).diagonal(axis1=0, axis2=2).transpose(2, 0, 1)
-
-        rate_Corrs = AV + VAT + np.array(_Noises)
+        # # map
+        # mode_rate = lambda M, m, n: np.dot(M, m) + n
+        # corr_rate = lambda A, V, D: (np.dot(A, V) + np.dot(V, np.transpose(A)) + D).ravel()
+        # rate_modes = list(map(mode_rate, _Coeffs, _modes, _consts))
+        # rate_Corrs = list(map(corr_rate, _Drifts, _Corrs, _Noises))
 
         rates = np.zeros((_n_s, _n_m * (4 * _n_m + 1)), dtype='complex')
         rates[:, : _n_m] = rate_modes
-        rates[:, _n_m :] = rate_Corrs.reshape((_n_s, 4 * _n_m * _n_m))
+        rates[:, _n_m :] = rate_Corrs
 
         return rates.ravel().tolist()
 
-    def get_initial_values_and_constants(self, var_params=None):
+    def get_ivc_multi(self, var_params=None):
         """Function to obtain the initial values and constants required for the IVP.
 
         Parameters
@@ -255,9 +259,6 @@ class Model00():
 
         # thermal phonon numbers
         _params[:, _idx['n_ths'] : _idx['n_ths'] + _n_c] = self.params['n_ths']  
-
-        # convert to list
-        _params = _params.tolist()
 
         # initialize lists
         _Coeffs = list()
