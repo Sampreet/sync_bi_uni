@@ -1,54 +1,106 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Models to simulate a bidirectionally-coupled configuration of optomechanical systems."""
+"""Class to simulate a bidirectionally-coupled configuration of QOM systems."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2020-09-01'
+__updated__ = '2021-01-06'
 
 # dependencies
 import numpy as np
 
-class Model00(object):
-    """Class containing the model and parameter generation function for the bidirectionally-coupled configuration of optomechanical cavities without transformation.
+# qom modules
+from qom.systems import DODMSystem
 
-    The class inherits object.
+class Bi00(DODMSystem):
+    """Class to simulate a bidirectionally-coupled configuration of QOM systems.
 
-    Attributes
+    Inherits :class:`qom.systems.DODMSystem`.
+
+    Parameters
     ----------
-    NAME : str
-        Name of the model
-    
-    CODE : str
-        Short code for the model
-
-    p : dict
-        Parameters for the model.
+    params : dict
+        Parameters for the system.
     """
-    
-    # class attributes
-    NAME = 'Simple Bidirectional'
-    CODE = 'bi_00'
-    p = {}
 
-    def __init__(self, model_params):
-        """Class constructor for Model.
+    def __init__(self, params):
+        """Class constructor for Bi00."""
+        
+        # initialize super class
+        super().__init__(params)
 
-        Parameters
-        ----------
-        model_params : dict
-            Parameters for the model.
+        # update code and name
+        self.code = 'sync_bi_uni_bi_00'
+        self.name = 'Simple Bidirectional QOM System'
+
+    def ivc_func(self):
+        """Function to obtain the initial values and constants required for the IVP.
+        
+        Returns
+        -------
+        iv : list
+            Initial values of variables.
+
+        c : list
+            Constant parameters.
         """
 
-        # initialize parent class
-        super().__init__()
+        # extract frequently used variables
+        A_l         = self.params['A_l']
+        delta       = self.params['delta']
+        Delta_0     = self.params['Delta_0']
+        arr_g_0     = self.params['g_0']
+        arr_gamma   = self.params['gamma']
+        arr_kappa   = self.params['kappa']
+        lamb        = self.params['lamb']
+        arr_n_th    = self.params['n_th']
+        omega_m     = self.params['omega_m']
 
-        # extract model params
-        self.p = model_params
+        # update frequencies
+        arr_omega_m = [omega_m, omega_m + delta]
+        arr_Delta_0 = arr_omega_m
+        if Delta_0 < 0:
+            arr_Delta_0 = -1 * arr_omega_m
 
-    def model_complex(self, t, v, c):
-        """Model function for the rate equations of the modes and correlations.
+        # noise correlation matrix
+        D = np.zeros([4*2, 4*2], dtype='float')
+        # optical mode correlation relations
+        for i in range(2):
+            D[4*i + 0][4*i + 0] = arr_kappa[i]
+            D[4*i + 1][4*i + 1] = arr_kappa[i]
+            D[4*i + 2][4*i + 2] = arr_gamma[i]*(2*arr_n_th[i] + 1)
+            D[4*i + 3][4*i + 3] = arr_gamma[i]*(2*arr_n_th[i] + 1)
+
+        # convert to 1D list and concatenate all constants
+        c = arr_omega_m + \
+            arr_Delta_0 + \
+            arr_kappa + \
+            arr_gamma + \
+            arr_g_0 + \
+            [A_l] + \
+            [lamb] + \
+            D.flatten().tolist()
+ 
+        # initial mode values as 1D list
+        u_0 = np.zeros(2*2, dtype='complex').tolist()
+
+        # initial quadrature correlations
+        V_0 = np.zeros([4*2, 4*2], dtype='float')
+        for i in range(2):
+            V_0[4*i + 0][4*i + 0] = 1/2
+            V_0[4*i + 1][4*i + 1] = 1/2
+            V_0[4*i + 2][4*i + 2] = (arr_n_th[i] + 1/2)
+            V_0[4*i + 3][4*i + 3] = (arr_n_th[i] + 1/2)
+
+        # convert to 1D list and concatenate all variables
+        iv = u_0 + [np.complex(element) for element in V_0.flatten().tolist()]
+
+        # return concatenated lists of variables and constants
+        return iv, c
+
+    def ode_func(self, t, v, c):
+        """Function for the rate equations of the modes and quadrature correlations.
         
         The variables are complex-valued, hence the model requires a complex-valued integrator.
         
@@ -150,82 +202,12 @@ class Model00(object):
         # quadrature correlation rate equation
         dmat_Corr_dt = A.dot(mat_Corr) + mat_Corr.dot(np.transpose(A)) + D
 
+        # account for numerical error
+        dmat_Corr_dt = (dmat_Corr_dt + np.transpose(dmat_Corr_dt)) / 2
+
         # convert to 1D list and concatenate all rates
         rates = [arr_da_dt[0], arr_db_dt[0], arr_da_dt[1], arr_db_dt[1]] + [np.complex(element) for row in dmat_Corr_dt.flatten().tolist() for element in row]
 
         # return concatenated list
         return rates
 
-    def get_initial_values_and_constants(self):
-        """Function to obtain the initial values and constants required for the IVP.
-        
-        Returns
-        -------
-        v : list
-            Initial values of variables.
-
-        c : list
-            Constant parameters.
-        """
-
-        # extract frequently used variables
-        # mechanical mode frequency
-        omega_m     = self.p['omega_m']
-        # cavity detuning
-        Delta_0     = self.p['Delta_0']
-        # optical mode decay rates
-        arr_kappa   = self.p['kappa']
-        # mechanical mode decay rates
-        arr_gamma   = self.p['gamma']
-        # coupling contants
-        arr_g_0     = self.p['g_0']
-        # mechanical detuning
-        delta       = self.p['delta']
-        # laser drive amplitude
-        A_l         = self.p['A_l']
-        # transmission loss coefficient
-        lamb        = self.p['lamb']
-        # mean thermal occupancy number
-        arr_n_th    = self.p['n_th']
-
-        # update frequencies
-        arr_omega_m = [omega_m, omega_m + delta]
-        arr_Delta_0 = arr_omega_m
-        if Delta_0 < 0:
-            arr_Delta_0 = -1 * arr_omega_m
-
-        # noise correlation matrix
-        D = np.zeros([4*2, 4*2], dtype='float')
-        # optical mode correlation relations
-        for i in range(2):
-            D[4*i + 0][4*i + 0] = arr_kappa[i]
-            D[4*i + 1][4*i + 1] = arr_kappa[i]
-            D[4*i + 2][4*i + 2] = arr_gamma[i]*(2*arr_n_th[i] + 1)
-            D[4*i + 3][4*i + 3] = arr_gamma[i]*(2*arr_n_th[i] + 1)
-
-        # convert to 1D list and concatenate all constants
-        c = arr_omega_m + \
-            arr_Delta_0 + \
-            arr_kappa + \
-            arr_gamma + \
-            arr_g_0 + \
-            [A_l] + \
-            [lamb] + \
-            D.flatten().tolist()
- 
-        # initial mode values as 1D list
-        u_0 = np.zeros(2*2, dtype='complex').tolist()
-
-        # initial quadrature correlations
-        V_0 = np.zeros([4*2, 4*2], dtype='float')
-        for i in range(2):
-            V_0[4*i + 0][4*i + 0] = 1/2
-            V_0[4*i + 1][4*i + 1] = 1/2
-            V_0[4*i + 2][4*i + 2] = (arr_n_th[i] + 1/2)
-            V_0[4*i + 3][4*i + 3] = (arr_n_th[i] + 1/2)
-
-        # convert to 1D list and concatenate all variables
-        v = u_0 + [np.complex(element) for element in V_0.flatten().tolist()]
-
-        # return concatenated lists of variables and constants
-        return v, c

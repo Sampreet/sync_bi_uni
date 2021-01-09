@@ -1,0 +1,50 @@
+{
+    "looper": {
+        "show_progress": false,
+        "X": {
+            "var": "delta",
+            "min": 0.00,
+            "max": 0.01,
+            "dim": 101
+        },
+        "Y": {
+            "var": "eta",
+            "min": 0.5,
+            "max": 1.0,
+            "dim": 51
+        }
+    },
+    "solver": {
+        "cache": true,
+        "cache_dir": "data\\uni_00",
+        "measure_type": "qcm",
+        "qcm_type": "elements",
+        "idx_mode_i": [1, 1, 3],
+        "idx_mode_j": [1, 3, 3],
+        "range_min": 49371,
+        "range_max": 50001,
+        "T": {
+            "var": "t",
+            "min": 0,
+            "max": 5000,
+            "dim": 50001
+        }
+    },
+    "system": {
+        "A_l": 52,
+        "delta": 0.005, 
+        "Delta_0": 1, 
+        "eta": 0.75,
+        "g_0s": [0.005, 0.005],
+        "gammas": [0.005, 0.005],
+        "kappas": [0.15, 0.15],
+        "n_ths": [0, 0],
+        "omega_m": 1
+    },
+    "plotter": {
+        "type": "contourf",
+        "title": "Pearson Correlator ($C_{P}$)",
+        "x_label": "$\\delta$",
+        "y_label": "$\\eta$"
+    }
+}

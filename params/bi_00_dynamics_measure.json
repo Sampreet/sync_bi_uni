@@ -1,0 +1,33 @@
+{
+    "solver": {
+        "show_progress": true,
+        "cache": true,
+        "cache_dir": "data\\bi_00",
+        "measure_type": "qcm",
+        "qcm_type": "sync_phase",
+        "idx_mode_i": 1,
+        "idx_mode_j": 3,
+        "range_min": 0,
+        "range_max": 50001,
+        "T": {
+            "var": "t",
+            "min": 0,
+            "max": 5000,
+            "dim": 50001
+        }
+    },
+    "system": {
+        "A_l": 52,
+        "delta": 0.005, 
+        "Delta_0": 1, 
+        "g_0": [0.005, 0.005],
+        "gamma": [0.005, 0.005],
+        "kappa": [0.15, 0.15],
+        "lamb": 0.075,
+        "n_th": [0, 0],
+        "omega_m": 1
+    },
+    "plotter": {
+        "type": "line"
+    }
+}
