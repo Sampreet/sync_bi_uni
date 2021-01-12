@@ -1,26 +1,27 @@
 {
     "solver": {
         "show_progress": true,
-        "cache": true,
+        "cache": false,
         "cache_dir": "data\\uni_00",
+        "method": "RK45",
         "measure_type": "qcm",
         "qcm_type": "sync_phase",
         "idx_mode_i": 1,
         "idx_mode_j": 3,
         "range_min": 0,
-        "range_max": 50001,
+        "range_max": 10001,
         "T": {
             "var": "t",
             "min": 0,
-            "max": 5000,
-            "dim": 50001
+            "max": 1000,
+            "dim": 10001
         }
     },
     "system": {
         "A_l": 52,
-        "delta": 0.0064, 
+        "delta": 0.0, 
         "Delta_0": 1, 
-        "eta": 0.55,
+        "eta": 0.75,
         "g_0s": [0.005, 0.005],
         "gammas": [0.005, 0.005],
         "kappas": [0.15, 0.15],
@@ -28,6 +29,11 @@
         "omega_m": 1
     },
     "plotter": {
-        "type": "line"
+        "type": "line",
+        "title": "Phase Synchronization ($\\delta=0.005$, $\\eta=0.75$)",
+        "x_label": "$\\omega_{m} t$",
+        "v_label": "$S_{P}$",
+        "v_bound": "both",
+        "v_ticks": [0.0, 0.05, 0.1, 0.15, 0.2]
     }
 }

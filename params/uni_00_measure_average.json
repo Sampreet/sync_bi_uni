@@ -1,11 +1,11 @@
 {
     "looper": {
-        "show_progress": false,
+        "show_progress": true,
         "X": {
             "var": "delta",
             "min": 0.00,
             "max": 0.01,
-            "dim": 101
+            "dim": 51
         },
         "Y": {
             "var": "eta",
@@ -17,17 +17,18 @@
     "solver": {
         "cache": true,
         "cache_dir": "data\\uni_00",
+        "method": "RK45",
         "measure_type": "qcm",
         "qcm_type": "sync_phase",
         "idx_mode_i": 1,
         "idx_mode_j": 3,
-        "range_min": 49371,
-        "range_max": 50001,
+        "range_min": 99371,
+        "range_max": 100001,
         "T": {
             "var": "t",
             "min": 0,
-            "max": 5000,
-            "dim": 50001
+            "max": 10000,
+            "dim": 100001
         }
     },
     "system": {
@@ -42,9 +43,14 @@
         "omega_m": 1
     },
     "plotter": {
-        "type": "contourf",
-        "title": "Phase Synchronization ($S_{P}$)",
+        "type": "line",
+        "title": "Phase Synchronization ($\\eta=0.75$)",
         "x_label": "$\\delta$",
-        "y_label": "$\\eta$"
+        "x_bound": "both",
+        "x_ticks": [0, 0.002, 0.004, 0.006, 0.008, 0.01],
+        "y_label": "$\\eta$",
+        "v_label": "$S_{P}$",
+        "v_bound": "both",
+        "v_ticks": [0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
     }
 }

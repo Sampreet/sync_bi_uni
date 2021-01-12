@@ -5,7 +5,7 @@ import os
 import sys
 
 # qom modules
-from qom.loopers import XYLooper
+from qom.loopers import XLooper
 from qom.ui import init_log
 init_log()
 
@@ -31,7 +31,7 @@ def func(system_params, val, logger, results):
     results.append((val, res))
 
 # looper
-looper = XYLooper(func, params)
+looper = XLooper(func, params)
 _file = 'data\\uni_00\\C_P_' + str(params['solver']['range_min']) + '_' + str(params['solver']['range_max'])
 
 # load
@@ -39,18 +39,17 @@ if os.path.isfile(_file + '.npz'):
     _data = np.load(_file + '.npz')
     looper.results = {
         'X': _data['X'].tolist(),
-        'Y': _data['Y'].tolist(),
         'V': _data['V'].tolist()
     }
 # save
 else:
     looper.loop()
     _xs = np.array(looper.results['X'])
-    _ys = np.array(looper.results['Y'])
     _vs = np.array(looper.results['V'])
-    np.savez_compressed(_file, X=_xs, Y=_ys, V=_vs)
+    np.savez_compressed(_file, X=_xs, V=_vs)
 
 # plot
+print(looper.results['V'])
 looper.plot_results()
 
 

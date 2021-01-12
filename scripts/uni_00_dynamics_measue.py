@@ -21,4 +21,4 @@ with open('params/uni_00_dynamics_measure.json') as params_file:
 system = Uni00(params['system'])
 
 # get dynamics
-M = system.get_dynamics_measure(params['solver'], system.ivc_func, system.ode_func, True, params['plotter'])
+M = system.get_dynamics_measure(params['solver'], system.ode_func_modes, system.ivc_func, system.ode_func_corrs, True, params['plotter'])

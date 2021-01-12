@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-04'
-__updated__ = '2021-01-05'
+__updated__ = '2021-01-12'
 
 # dependencies
 import numpy as np
@@ -219,16 +219,206 @@ class Uni00(DODMSystem):
         # quadrature correlation rate equation
         dmat_Corr_dt = A.dot(mat_Corr) + mat_Corr.dot(np.transpose(A)) + D
 
-        # account for numerical error
-        dmat_Corr_dt = (dmat_Corr_dt + np.transpose(dmat_Corr_dt)) / 2
+        # # account for numerical error
+        # dmat_Corr_dt = (dmat_Corr_dt + np.transpose(dmat_Corr_dt)) / 2
 
-        # # mirror matrix
-        # for i in range(len(dmat_Corr_dt)):
-        #     for j in range(0, i):
-        #         dmat_Corr_dt[i, j] = dmat_Corr_dt[j, i]
+        # mirror matrix
+        for i in range(len(dmat_Corr_dt)):
+            for j in range(0, i):
+                dmat_Corr_dt[i, j] = dmat_Corr_dt[j, i]
 
         # convert to 1D list and concatenate all rates
         rates = [arr_da_dt[0], arr_db_dt[0], arr_da_dt[1], arr_db_dt[1]] + [np.complex(element) for row in dmat_Corr_dt.flatten().tolist() for element in row]
+
+        # return concatenated list
+        return rates
+
+    def ode_func_modes(self, t, u, c):
+        """Model function for the rate equations of the modes and correlations.
+        
+        The variables are complex-valued, hence the model requires a complex-valued integrator.
+        
+        Parameters
+        ----------
+        t : *float*
+            Time at which the rate is calculated.
+
+        v : list
+            Complex-valued variables defining the system. 
+            First 2 elements contain the optical and mechanical modes of the 1st cavity.
+            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
+            Next (4*2)^2 elements contain the correlations.
+
+        c : list
+            Real-valued constants.
+            First 2 elements contain the mechanical mode frequencies.
+            Next 2 elements contain the detunings.
+            Next 2 elements contain the optical mode decay rates.
+            Next 2 elements contain the mechanical mode decay rates.
+            Next 2 elements contain the intra-cavity coupling constants.
+            Next element contains the laser drive amplitude.
+            Next element contains the transmission loss coefficient.
+            Next (4*2)^2 elements contain the noise correlations.
+
+        Returns
+        -------
+        rates : list
+            Rates of the complex-valued variables defining the system. 
+            First 2 elements contain the optical and mechanical modes of the 1st cavity.
+            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
+            Next (4*2)^2 elements contain the correlations.
+        """
+        
+        # extract the optical modes
+        arr_a = [u[0], u[2]]
+        # extract the mechanical modes
+        arr_b = [u[1], u[3]]
+        
+        # extract constants
+        Params = np.array(c).reshape([6 + 4*4*2, 2])
+        # 1st row contains mechanical mode frequencies
+        arr_omega_m = Params[0]
+        # 2nd row contains detunings
+        arr_Delta_0 = Params[1]
+        # 3rd row contains optical mode decay rates
+        arr_kappa   = Params[2]
+        # 4th row contains mechanical mode decay rates
+        arr_gamma   = Params[3]
+        # 5th row contains coupling contants
+        arr_g_0     = Params[4]
+        # 6th row contains laser drive amplitude and transmission loss coefficient
+        A_l, eta    = Params[5]
+
+        # effective detunings
+        arr_Delta   = []
+        arr_g       = []
+        for i in range(2):
+            arr_Delta.append(arr_Delta_0[i] + 2*arr_g_0[i]*np.real(arr_b[i]))
+            arr_g.append(arr_g_0[i]*arr_a[i])
+        # frequently used variables
+        temp = np.sqrt(eta*arr_kappa[0]*arr_kappa[1])
+
+        # calculate rates
+        arr_da_dt = []
+        arr_db_dt = []
+        for i in range(2):
+            arr_da_dt.append((-arr_kappa[i] + 1j*arr_Delta[i])*arr_a[i])
+            arr_db_dt.append(1j*arr_g[i]*np.conjugate(arr_a[i]) + (-arr_gamma[i] - 1j*arr_omega_m[i])*arr_b[i])
+        arr_da_dt[0] += A_l
+        arr_da_dt[1] += -2*temp*arr_a[0] + (np.sqrt(eta) + np.sqrt(1 - eta))*A_l
+
+        # convert to 1D list and concatenate all rates
+        rates = [arr_da_dt[0], arr_db_dt[0], arr_da_dt[1], arr_db_dt[1]]
+
+        # return concatenated list
+        return rates
+
+    def ode_func_corrs(self, t, v, c):
+        """Model function for the rate equations of the modes and correlations.
+        
+        The variables are complex-valued, hence the model requires a complex-valued integrator.
+        
+        Parameters
+        ----------
+        t : *float*
+            Time at which the rate is calculated.
+
+        v : list
+            Complex-valued variables defining the system. 
+            First 2 elements contain the optical and mechanical modes of the 1st cavity.
+            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
+            Next (4*2)^2 elements contain the correlations.
+
+        c : list
+            Real-valued constants.
+            First 2 elements contain the mechanical mode frequencies.
+            Next 2 elements contain the detunings.
+            Next 2 elements contain the optical mode decay rates.
+            Next 2 elements contain the mechanical mode decay rates.
+            Next 2 elements contain the intra-cavity coupling constants.
+            Next element contains the laser drive amplitude.
+            Next element contains the transmission loss coefficient.
+            Next (4*2)^2 elements contain the noise correlations.
+
+        Returns
+        -------
+        rates : list
+            Rates of the complex-valued variables defining the system. 
+            First 2 elements contain the optical and mechanical modes of the 1st cavity.
+            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
+            Next (4*2)^2 elements contain the correlations.
+        """
+
+        # next element onwards, the correlations
+        mat_Corr = np.matrix(np.real(v)).reshape([4*2, 4*2])
+        
+        # extract constants
+        Params = np.array(c).reshape([6 + 4*4*2 + 2, 2])
+        # 1st row contains mechanical mode frequencies
+        arr_omega_m = Params[0]
+        # 2nd row contains detunings
+        arr_Delta_0 = Params[1]
+        # 3rd row contains optical mode decay rates
+        arr_kappa   = Params[2]
+        # 4th row contains mechanical mode decay rates
+        arr_gamma   = Params[3]
+        # 5th row contains coupling contants
+        arr_g_0     = Params[4]
+        # 6th row contains laser drive amplitude and transmission loss coefficient
+        A_l, eta    = Params[5]
+        # Next row onwards, noise correlations
+        D = np.matrix(Params[6:6 + 4*4*2]).reshape([4*2, 4*2])
+        # extract the optical modes
+        arr_a = [Params[6 + 4*4*2][0], Params[6 + 4*4*2 + 1][0]]
+        # extract the mechanical modes
+        arr_b = [Params[6 + 4*4*2][1], Params[6 + 4*4*2 + 1][1]]
+
+        # effective detunings
+        arr_Delta   = []
+        arr_g       = []
+        for i in range(2):
+            arr_Delta.append(arr_Delta_0[i] + 2*arr_g_0[i]*np.real(arr_b[i]))
+            arr_g.append(arr_g_0[i]*arr_a[i])
+        # frequently used variables
+        temp = np.sqrt(eta*arr_kappa[0]*arr_kappa[1])
+
+        # initialize drift matrix
+        A = np.zeros([4*2, 4*2], dtype='float')
+        for i in range(2):
+            A[4*i + 0][4*i + 0] = -arr_kappa[i]
+            A[4*i + 0][4*i + 1] = -arr_Delta[i]
+            A[4*i + 0][4*i + 2] = -2*np.imag(arr_g[i])
+
+            A[4*i + 1][4*i + 0] = arr_Delta[i]
+            A[4*i + 1][4*i + 1] = -arr_kappa[i]
+            A[4*i + 1][4*i + 2] = 2*np.real(arr_g[i])
+
+            A[4*i + 2][4*i + 2] = -arr_gamma[i]
+            A[4*i + 2][4*i + 3] = arr_omega_m[i]
+
+            A[4*i + 3][4*i + 0] = 2*np.real(arr_g[i])
+            A[4*i + 3][4*i + 1] = 2*np.imag(arr_g[i])
+            A[4*i + 3][4*i + 2] = -arr_omega_m[i]
+            A[4*i + 3][4*i + 3] = -arr_gamma[i]
+        A[4][0] = -2*temp
+        A[5][1] = -2*temp
+
+        # convert to numpy matrix 
+        A = np.matrix(A)
+
+        # quadrature correlation rate equation
+        dmat_Corr_dt = A.dot(mat_Corr) + mat_Corr.dot(np.transpose(A)) + D
+
+        # # average out upper and lower triangular matrices
+        # dmat_Corr_dt = (dmat_Corr_dt + np.transpose(dmat_Corr_dt)) / 2
+
+        # mirror matrix about diagonal
+        for i in range(len(dmat_Corr_dt)):
+            for j in range(0, i):
+                dmat_Corr_dt[i, j] = dmat_Corr_dt[j, i]
+
+        # convert to 1D list and concatenate all rates
+        rates = [np.real(element) for row in dmat_Corr_dt.flatten().tolist() for element in row]
 
         # return concatenated list
         return rates
@@ -252,7 +442,7 @@ class Uni00(DODMSystem):
         """
 
         # get measure
-        M = self.get_dynamics_measure(solver_params, self.ivc_func, self.ode_func, plot, plotter_params)
+        M = self.get_dynamics_measure(solver_params, self.ode_func_modes, self.ivc_func, self.ode_func_corrs, plot, plotter_params)
 
         # calculate average
         m_avg = np.mean(M)
@@ -278,7 +468,7 @@ class Uni00(DODMSystem):
         """
 
         # get measure
-        M = self.get_dynamics_measure(solver_params, self.ivc_func, self.ode_func, plot, plotter_params)
+        M = self.get_dynamics_measure(solver_params, self.ode_func_modes, self.ivc_func, self.ode_func_corrs, plot, plotter_params)
 
         # frequently used variables
         _dim = len(M)
