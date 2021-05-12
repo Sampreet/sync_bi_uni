@@ -3,7 +3,8 @@
 
 # extra folders
 data*/
-temp/
+img*/
+temp*/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
