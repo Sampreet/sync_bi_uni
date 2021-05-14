@@ -1,4 +1,4 @@
-# Quantum Synchronzation Transition in Optically Coupled Optomechanical Oscillators
+# Quantum Synchronization Transition in Optically Coupled Optomechanical Oscillators
 
 Author | Affiliation
 ------------ | -------------
