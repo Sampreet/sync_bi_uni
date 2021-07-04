@@ -42,7 +42,7 @@ params = {
     'system': {
         'A_l': 52.0,
         'Delta_0': 1.0,
-        'delta': 0.01, 
+        'delta': 0.005, 
         'eta': 0.75,
         'g_0s': [0.005, 0.005],
         'gammas': [0.005, 0.005],
@@ -66,7 +66,7 @@ params = {
 }
 
 # counter
-Counts = count_pixels(Uni00, params, 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/Counts_cyc_10_nth_0', 'H:/Workspace/VSCode/Python/sync_bi_uni/img/uni_00/0.0_10000.0_100001/a1', 4, 3)
+Counts = count_pixels(Uni00, params, 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/Counts_1e4-20pi', 'H:/Workspace/VSCode/Python/sync_bi_uni/img/uni_00/0.0_10000.0_100001/a1', 4, 3)
 
 # plotter
 plotter = MPLPlotter({

@@ -37,7 +37,9 @@ def count_pixels(SystemClass, params, file_path, imgs_path='imgs/sys_00/tmin_tma
     # system
     system = SystemClass(params['system'])
 
-    # complete filename
+    # complete filename with system parameters
+    for key in params['system']:
+        file_path += '_' + str(params['system'][key])
     X = params['looper']['X']
     for key in X:
         file_path += '_' + str(X[key])

@@ -62,14 +62,10 @@ init_log()
 system = Bi00(params['system'])
 
 # elements
-M_ele = system.get_measure_dynamics(params['solver'], system.ode_func, system.ivc_func)
+M_ele, T = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
 M_ele = np.imag(M_ele)
 
 # plotter
-t_min = params['solver']['range_min']
-t_max = params['solver']['range_max']
-t_ss = (params['solver']['t_dim'] - 1) / params['solver']['t_max']
-T = np.linspace(t_min / t_ss, t_max / t_ss, t_max - t_min).tolist()
 axes = {
     'X': T,
     'Y': {
@@ -79,6 +75,6 @@ axes = {
 }
 plotter = MPLPlotter(axes, params['plotter'])
 _xs = [T, T]
-_vs = np.transpose(M_ele)
+_vs = np.transpose(M_ele).tolist()
 plotter.update(xs=_xs, vs=_vs)
 plotter.show(True, 7.5, 6.0)

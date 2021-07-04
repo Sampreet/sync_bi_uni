@@ -5,14 +5,13 @@ import sys
 
 # qom modules
 from qom.ui.plotters import MPLPlotter
+from qom.utils.wrappers import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
 from systems.Uni00 import Uni00
 from systems.Uni01 import Uni01
-# import wrapper
-from utils.wrappers import wrap_looper
 
 # all parameters
 params = {
@@ -38,7 +37,7 @@ params = {
     'system': {
         'A_l': 52.0,
         'Delta_0': 1.0, 
-        'delta': 0.01, 
+        'delta': 0.005, 
         'eta': 0.75,
         'g_0s': [0.005, 0.005],
         'gammas': [0.005, 0.005],
@@ -69,15 +68,15 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_cyc_10_nth_0')
+looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_1e4-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
 # get transverse Lyapunov exponents
-params['solver']['measure_type'] = 'corr_ele'
-params['solver']['idx_row'] = [3, 3, 7]
-params['solver']['idx_col'] = [3, 7, 7]
-looper = wrap_looper(Uni01, params, 'TLE', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/TLE_cyc_10_nth_0')
-TLE = looper.results['V']
+params['solver']['idx_eig'] = [6, 7]
+looper = wrap_looper(Uni01, params, 'eig_max', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/Eig_max_1e4-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
+Eig_max = looper.results['V']
 
 # plotter
 X = looper.axes['X']['val']
@@ -101,6 +100,6 @@ ax_right.set_ylim(0, 0.16)
 ax_right.set_yticks([0, 0.08, 0.16])
 ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
 # plot transverse Lyapunov exponents
-ax.plot(X, TLE, linestyle='-', color=_colors[0])
-ax.scatter(X, TLE, marker='o', color=_colors[0], s=15)
+ax.plot(X, Eig_max, linestyle='-', color=_colors[0])
+ax.scatter(X, Eig_max, marker='o', color=_colors[0], s=15)
 plotter.show(True, 7.5, 2.5)

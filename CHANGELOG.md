@@ -1,5 +1,13 @@
 # Changelog
 
+## 2021/07/04 - 00 - Version Upgrade
+> Toolbox version 0.7.7
+* Updated file paths in `bi_00` and `uni_00` notebooks.
+* Updated modules used in `bi_00` and `uni_00` scripts.
+* Major fixes to `Bi00`, `Uni00` and `Uni01` systems.
+* Added system parameters for file path in `utils/counters` module.
+* Updated `README`.
+
 ## 2021/05/14 - 01 - Minor Fixes
 > Toolbox version 0.7.0
 * Updated `CHANGELOG`.

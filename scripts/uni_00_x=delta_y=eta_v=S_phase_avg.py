@@ -2,12 +2,13 @@
 import os 
 import sys
 
+# qom modules
+from qom.utils.wrappers import wrap_looper
+
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
 from systems.Uni00 import Uni00
-# import wrapper
-from utils.wrappers import wrap_looper
 
 # all parameters
 params = {
@@ -47,7 +48,7 @@ params = {
         'g_0s': [0.005, 0.005],
         'gammas': [0.005, 0.005],
         'kappas': [0.15, 0.15],
-        'n_ths': [10, 10],
+        'n_ths': [0, 0],
         'omega_m': 1.0
     },
     'plotter': {
@@ -70,4 +71,5 @@ params = {
 }
 
 # get average phase synchronization
-looper = wrap_looper(Uni00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_cyc_10_nth_0', True)
+looper = wrap_looper(Uni00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_1e4-20pi', True)
+print(looper.get_thresholds(thres_mode='minmax'))

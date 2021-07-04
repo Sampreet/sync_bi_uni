@@ -62,14 +62,10 @@ init_log()
 system = Uni00(params['system'])
 
 # elements
-M_ele = system.get_measure_dynamics(params['solver'], system.ode_func, system.ivc_func)
+M_ele, T = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
 M_ele = np.real(M_ele)
 
 # plotter
-t_min = params['solver']['range_min']
-t_max = params['solver']['range_max']
-t_ss = (params['solver']['t_dim'] - 1) / params['solver']['t_max']
-T = np.linspace(t_min / t_ss, t_max / t_ss, t_max - t_min).tolist()
 axes = {
     'X': T,
     'Y': {

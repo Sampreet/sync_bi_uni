@@ -63,19 +63,15 @@ system = Uni00(params['system'])
 
 # get phase synchronization
 params['solver']['qcm_type'] = 'sync_phase'
-M_sync = system.get_measure_dynamics(params['solver'], system.ode_func, system.ivc_func)
+M_sync, T = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
 sync_avg = np.mean(M_sync[9371:])
 
 # get Gaussian discord
 params['solver']['qcm_type'] = 'discord'
-M_disc = system.get_measure_dynamics(params['solver'], system.ode_func, system.ivc_func)
+M_disc, T = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
 disc_avg = np.mean(M_disc[9371:])
 
 # plotter
-t_min = params['solver']['range_min']
-t_max = params['solver']['range_max']
-t_ss = (params['solver']['t_dim'] - 1) / params['solver']['t_max']
-T = np.linspace(t_min / t_ss, t_max / t_ss, t_max - t_min).tolist()
 axes = {
     'X': T,
     'Y': {

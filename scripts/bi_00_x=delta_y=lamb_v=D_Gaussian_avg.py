@@ -3,14 +3,12 @@ import os
 import sys
 
 # qom modules
-from qom.ui.plotters import MPLPlotter
+from qom.utils.wrappers import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
 from systems.Bi00 import Bi00
-# import wrapper
-from utils.wrappers import wrap_looper
 
 # all parameters
 params = {
@@ -72,4 +70,5 @@ params = {
 }
 
 # get average Gaussian discord
-looper = wrap_looper(Bi00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/D_G_avg_cyc_10_nth_0', True)
+looper = wrap_looper(Bi00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/D_Gaussian_avg_1e3-20pi', True)
+print(looper.get_thresholds(thres_mode='minmax'))

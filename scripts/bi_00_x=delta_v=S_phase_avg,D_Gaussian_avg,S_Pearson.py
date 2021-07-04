@@ -3,9 +3,8 @@ import os
 import sys
 
 # qom modules
-from qom.loopers import XLooper
-from qom.ui import init_log
 from qom.ui.plotters import MPLPlotter
+from qom.utils.wrappers import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
@@ -57,28 +56,13 @@ params = {
     }
 }
 
-# initialize log
-init_log()
-
-# initialize system
-system = Bi00(params['system'])
-
-# function to calculate average measure
-def func_measure_average(system_params, val, logger, results):
-    # update parameters
-    system.params = system_params
-    # get dynamics
-    M_avg = system.get_measure_average(params['solver'], system.ode_func, system.ivc_func)
-    # update results
-    results.append((val, M_avg))
-
 # get average phase synchronization
 params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = XLooper(func_measure_average, params)
-looper.loop()
+looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/S_phase_avg_1e3-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
 # get average Gaussian discord
@@ -86,25 +70,16 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'discord'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = XLooper(func_measure_average, params)
-looper.loop()
-D_G_avg = looper.results['V']
-
-# function to calculate Pearson synchronization measure
-def func_measure_pearson(system_params, val, logger, results):
-    # update parameters
-    system.params = system_params
-    # get dynamics
-    S_Pearson = system.get_measure_pearson(params['solver'], system.ode_func, system.ivc_func)
-    # update results
-    results.append((val, S_Pearson))
+looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/D_Gaussian_avg_1e3-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
+D_Gaussian_avg = looper.results['V']
 
 # get Pearson synchronization
 params['solver']['measure_type'] = 'corr_ele'
 params['solver']['idx_row'] = [3, 3, 7]
 params['solver']['idx_col'] = [3, 7, 7]
-looper = XLooper(func_measure_pearson, params)
-looper.loop()
+looper = wrap_looper(Bi00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/S_Pearson_1e3-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
 S_Pearson = looper.results['V']
 
 # plotter
@@ -118,6 +93,6 @@ axes = {
 }
 plotter = MPLPlotter(axes, params['plotter'])
 _xs = [X, X, X]
-_vs = [S_phase_avg, [20 * m for m in D_G_avg], S_Pearson]
+_vs = [S_phase_avg, [20 * m for m in D_Gaussian_avg], S_Pearson]
 plotter.update(xs=_xs, vs=_vs)
 plotter.show(True, 6.0, 5.0)

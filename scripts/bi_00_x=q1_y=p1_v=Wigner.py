@@ -63,7 +63,7 @@ init_log()
 system = Bi00(params['system'])
 
 # get dynamics
-M = system.get_measure_dynamics(params['solver'], system.ode_func, system.ivc_func)
+M, _ = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
 V_mech = [np.reshape(m, (4, 4)) for m in M[-1:]]
 
 # initialize variables

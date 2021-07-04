@@ -5,13 +5,12 @@ import sys
 
 # qom modules
 from qom.ui.plotters import MPLPlotter
+from qom.utils.wrappers import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
 from systems.Uni00 import Uni00
-# import wrapper
-from utils.wrappers import wrap_looper
 
 # all parameters
 params = {
@@ -37,7 +36,7 @@ params = {
     'system': {
         'A_l': 52.0,
         'Delta_0': 1.0, 
-        'delta': 0.01, 
+        'delta': 0.005, 
         'eta': 0.75,
         'g_0s': [0.005, 0.005],
         'gammas': [0.005, 0.005],
@@ -68,14 +67,16 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_cyc_10_nth_0')
+looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_1e4-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
 # get Pearson synchronization
 params['solver']['measure_type'] = 'corr_ele'
 params['solver']['idx_row'] = [3, 3, 7]
 params['solver']['idx_col'] = [3, 7, 7]
-looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_Pearson_cyc_10_nth_0')
+looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_Pearson_1e4-20pi')
+print(looper.get_thresholds(thres_mode='minmax'))
 S_Pearson = looper.results['V']
 
 # plotter

@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2021-05-12'
+__updated__ = '2021-07-04'
 
 # dependencies
 import numpy as np
@@ -43,38 +43,42 @@ class Bi00(DODMSystem):
             'n_ths': params.get('n_ths', [0, 0]),
             'omega_m': params.get('omega_m', 1.0),
         }
-        # matrices
+        # drift matrix
         self.A = None
-        self.D = None
 
-    def get_A(self, modes):
+    def get_A(self, modes, params, t):
         """Function to obtain the drift matrix.
 
         Parameters
         ----------
         modes : list
-            Values of the optical and mechancial modes.
+            Values of the modes.
+        params : list
+            Constant parameters.
+        t : float
+            Time at which the rates are calculated.
         
         Returns
         -------
         A : list
             Drift matrix.
         """
-
+        
         # extract frequently used variables
-        g_0s    = self.params['g_0s']
-        gammas  = self.params['gammas']
-        kappas  = self.params['kappas']
-        lamb    = self.params['lamb']
+        Delta_0s= [params[1], params[2]]
+        g_0s    = [params[3], params[4]]
+        gammas  = [params[5], params[6]]
+        kappas  = [params[7], params[8]]
+        lamb    = params[9]
+        omega_ms= [params[10], params[11]]
         alphas  = [modes[0], modes[2]]
         betas   = [modes[1], modes[3]]
 
-        # get frequencies
-        Delta_0s, omega_ms = self.get_frequencies()
-
-        # effective detunings
+        # initialize lists
         Deltas  = list()
         gs      = list()
+
+        # effective detunings
         for i in range(2):
             Deltas.append(Delta_0s[i] + 2 * g_0s[i] * np.real(betas[i]))
             gs.append(g_0s[i] * alphas[i])
@@ -103,61 +107,94 @@ class Bi00(DODMSystem):
 
         return self.A
 
-    def get_D(self):
-        """Function to obtain the noise correlation matrix.
+    def get_ivc(self):
+        """Function to obtain the initial values and constants required for the IVP.
         
         Returns
         -------
-        D : list
-            Noise correlation matrix.
+        iv : list
+            Initial values of variables.
+            First element contains the optical mode of first cavity.
+            Next element contains the mechanical mode of first cavity.
+            Next element contains the optical mode of second cavity.
+            Next element contains the mechanical mode of second cavity.
+            Next (4*2)^2 elements contain the correlations.
+
+        c : list
+            Constant parameters.
+            First (4*2)^2 elements contain the noise matrix.
+            Next element contains the laser amplitude.
+            Next 2 elements contain the laser detunings.
+            Next 2 elements contain the optomechanical coupling strengths.
+            Next 2 elements contain the mechanical decay rates.
+            Next 2 elements contain the optical decay rates.
+            Next element contains the inter-cavity coupling.
+            Next 2 elements contain the mechanical frequencies.
         """
 
         # extract frequently used variables
+        A_l     = self.params['A_l']
+        Delta_0 = self.params['Delta_0']
+        delta   = self.params['delta']
+        g_0s    = self.params['g_0s']
         gammas  = self.params['gammas']
         kappas  = self.params['kappas']
+        lamb    = self.params['lamb']
         n_ths   = self.params['n_ths']
+        omega_m = self.params['omega_m']
+ 
+        # initial mode values as 1D list
+        modes_0 = np.zeros(4, dtype=np.complex_).tolist()
+
+        # initial quadrature correlations
+        corrs_0 = np.zeros([8, 8], dtype=np.float_)
+        for i in range(2):
+            corrs_0[4*i + 0][4*i + 0] = 0.5
+            corrs_0[4*i + 1][4*i + 1] = 0.5
+            corrs_0[4*i + 2][4*i + 2] = (n_ths[i] + 0.5)
+            corrs_0[4*i + 3][4*i + 3] = (n_ths[i] + 0.5)
+
+        # convert to 1D list and concatenate all variables
+        iv = modes_0 + [np.complex_(element) for element in corrs_0.flatten()]
 
         # noise correlation matrix
-        if self.D is None or np.shape(self.D) != (8, 8):
-            self.D = np.zeros([8, 8], dtype=np.float_)
+        D = np.zeros([8, 8], dtype=np.float_)
         for i in range(2):
-            self.D[4*i + 0][4*i + 0] = kappas[i]
-            self.D[4*i + 1][4*i + 1] = kappas[i]
-            self.D[4*i + 2][4*i + 2] = gammas[i] * (2 * n_ths[i] + 1)
-            self.D[4*i + 3][4*i + 3] = gammas[i] * (2 * n_ths[i] + 1)
-
-        return self.D
-
-    def get_frequencies(self):
-        """Function to obtain the mechanical frequencies and laser detunings.
-        
-        Returns
-        -------
-        Delta_0s : list
-            Laser detunings.
-        omega_ms : list
-            Mechanical frequencies.
-        """
-        
-        # extract frequently used variables
-        delta       = self.params['delta']
-        Delta_0     = self.params['Delta_0']
-        omega_m     = self.params['omega_m']
+            D[4*i + 0][4*i + 0] = kappas[i]
+            D[4*i + 1][4*i + 1] = kappas[i]
+            D[4*i + 2][4*i + 2] = gammas[i] * (2 * n_ths[i] + 1)
+            D[4*i + 3][4*i + 3] = gammas[i] * (2 * n_ths[i] + 1)
 
         # mechanical frequencies
         omega_ms = [omega_m, omega_m + delta]
         # laser detunings
-        Delta_0s = [Delta_0 * ele for ele in omega_ms]
-            
-        return Delta_0s, omega_ms
+        Delta_0s = [Delta_0 * e for e in omega_ms]
+        
+        # constant parameters
+        params = [A_l] + \
+            Delta_0s + \
+            g_0s + \
+            gammas + \
+            kappas + \
+            [lamb] + \
+            omega_ms
 
-    def get_rates_modes(self, values):
+        # all constants
+        c = D.flatten().tolist() + params
+
+        return iv, c
+
+    def get_mode_rates(self, modes, params, t):
         """Function to obtain the rates of the optical and mechanical modes.
 
         Parameters
         ----------
-        values : list
+        modes : list
             Values of the modes.
+        params : list
+            Constants parameters.
+        t : float
+            Time at which the rates are calculated.
         
         Returns
         -------
@@ -166,16 +203,15 @@ class Bi00(DODMSystem):
         """
         
         # extract frequently used variables
-        A_l     = self.params['A_l']
-        g_0s    = self.params['g_0s']
-        gammas  = self.params['gammas']
-        kappas  = self.params['kappas']
-        lamb    = self.params['lamb']
-        alphas  = [values[0], values[2]]
-        betas   = [values[1], values[3]]
-
-        # get frequencies
-        Delta_0s, omega_ms = self.get_frequencies()
+        A_l     = params[0]
+        Delta_0s= [params[1], params[2]]
+        g_0s    = [params[3], params[4]]
+        gammas  = [params[5], params[6]]
+        kappas  = [params[7], params[8]]
+        lamb    = params[9]
+        omega_ms= [params[10], params[11]]
+        alphas  = [modes[0], modes[2]]
+        betas   = [modes[1], modes[3]]
 
         # initialize lists
         Deltas      = list()
@@ -197,84 +233,3 @@ class Bi00(DODMSystem):
         mode_rates = [dalpha_dts[0], dbeta_dts[0], dalpha_dts[1], dbeta_dts[1]]
 
         return mode_rates
-
-    def ivc_func(self):
-        """Function to obtain the initial values and constants required for the IVP.
-        
-        Returns
-        -------
-        iv : list
-            Initial values of variables.
-
-        c : list
-            Constant parameters.
-        """
-
-        # extract frequently used variables
-        n_ths    = self.params['n_ths']
- 
-        # initial mode values as 1D list
-        u_0 = np.zeros(4, dtype=np.complex_).tolist()
-
-        # initial quadrature correlations
-        V_0 = np.zeros([8, 8], dtype=np.float_)
-        for i in range(2):
-            V_0[4*i + 0][4*i + 0] = 1 / 2
-            V_0[4*i + 1][4*i + 1] = 1 / 2
-            V_0[4*i + 2][4*i + 2] = (n_ths[i] + 1 / 2)
-            V_0[4*i + 3][4*i + 3] = (n_ths[i] + 1 / 2)
-
-        # convert to 1D list and concatenate all variables
-        iv = u_0 + [np.complex_(element) for element in V_0.flatten()]
-
-        return iv, None
-
-    def ode_func(self, t, v):
-        """Function for the rate equations of the modes and quadrature correlations.
-        
-        The variables are complex-valued, hence the model requires a complex-valued integrator.
-        
-        Parameters
-        ----------
-        t : *float*
-            Time at which the rate is calculated.
-
-        v : list
-            Complex-valued variables defining the system. 
-            First 2 elements contain the optical and mechanical modes of the 1st cavity.
-            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
-            Next (4*2)^2 elements contain the correlations.
-
-        Returns
-        -------
-        rates : list
-            Rates of the complex-valued variables defining the system. 
-            First 2 elements contain the optical and mechanical modes of the 1st cavity.
-            Next 2 elements contain the optical and mechanical modes of the 2nd cavity.
-            Next (4*2)^2 elements contain the correlations.
-        """
-
-        # extract the modes and correlations
-        modes   = v[0:4]
-        corrs   = np.real(v[4:]).reshape([8, 8])
-
-        # mode rates
-        mode_rates  = self.get_rates_modes(modes)
-
-        # drift matrix
-        A = self.get_A(modes)
-        # noise matrix
-        D = self.get_D()
-
-        # quadrature correlation rate equation
-        dcorrs_dt = A.dot(corrs) + corrs.dot(np.transpose(A)) + D
-
-        # mirror matrix about diagonal
-        for i in range(len(dcorrs_dt)):
-            for j in range(0, i):
-                dcorrs_dt[i, j] = dcorrs_dt[j, i]
-
-        # convert to 1D list and concatenate all rates
-        rates = mode_rates + [np.complex(element) for element in dcorrs_dt.flatten()]
-
-        return rates
