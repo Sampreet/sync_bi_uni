@@ -30,7 +30,7 @@ class Uni02(BaseSystem):
 
         # set attributes
         self.code = 'uni_02'
-        self.name = 'Unidirectional;y-coupled Identical Configuration with Adiabatically Eliminated Optical Modes'
+        self.name = 'Unidirectionally-coupled Identical Configuration with Adiabatically Eliminated Optical Modes'
         self.num_modes = 2
         # set parameters
         self.params = {

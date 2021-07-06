@@ -1,5 +1,11 @@
 # Changelog
 
+## 2021/07/06 - 01 - Updated Notebooks
+> Toolbox version 0.7.7
+* Renamed notebooks for adiabatic elimination in `bi_00` and `uni_00`.
+* Added notebook for quadrature correlations of `uni_02`.
+* Minor fixes to `Uni02` system.
+
 ## 2021/07/06 - 00 - Added Notebooks
 > Toolbox version 0.7.7
 * Added notebooks for adiabatic elimination in `bi_00` and `uni_00`.
