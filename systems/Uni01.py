@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-28'
-__updated__ = '2021-07-04'
+__updated__ = '2021-07-06'
 
 # dependencies
 import numpy as np
@@ -30,7 +30,7 @@ class Uni01(DODMSystem):
 
         # update code and name
         self.code = 'uni_01'
-        self.name = 'Unidirectional QOM System with Plus-Minus Modes'
+        self.name = 'Unidirectionally-couple configuration with Plus-Minus Modes'
         
         # default parameters
         self.params = {

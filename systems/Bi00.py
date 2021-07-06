@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2021-07-04'
+__updated__ = '2021-07-06'
 
 # dependencies
 import numpy as np
@@ -30,7 +30,7 @@ class Bi00(DODMSystem):
 
         # set attributes
         self.code = 'bi_00'
-        self.name = 'Simple Bidirectional QOM System'  
+        self.name = 'Bidirectionally-coupled Configuration'  
         # default parameters
         self.params = {
             'A_l': params.get('A_l', 52.0),

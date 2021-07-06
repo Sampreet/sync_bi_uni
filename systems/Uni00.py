@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-04'
-__updated__ = '2021-07-04'
+__updated__ = '2021-07-06'
 
 # dependencies
 import numpy as np
@@ -30,7 +30,7 @@ class Uni00(DODMSystem):
 
         # set attributes
         self.code = 'uni_00'
-        self.name = 'Simple Unidirectional QOM System'
+        self.name = 'Unidirectionally-coupled Configuration'
         # set parameters
         self.params = {
             'A_l': params.get('A_l', 52.0),
@@ -151,10 +151,10 @@ class Uni00(DODMSystem):
         # initial quadrature correlations
         corrs_0 = np.zeros([8, 8], dtype=np.float_)
         for i in range(2):
-            corrs_0[4*i + 0][4*i + 0] = 1 / 2
-            corrs_0[4*i + 1][4*i + 1] = 1 / 2
-            corrs_0[4*i + 2][4*i + 2] = (n_ths[i] + 1 / 2)
-            corrs_0[4*i + 3][4*i + 3] = (n_ths[i] + 1 / 2)
+            corrs_0[4*i + 0][4*i + 0] = 0.5
+            corrs_0[4*i + 1][4*i + 1] = 0.5
+            corrs_0[4*i + 2][4*i + 2] = (n_ths[i] + 0.5)
+            corrs_0[4*i + 3][4*i + 3] = (n_ths[i] + 0.5)
 
         # convert to 1D list and concatenate all variables
         iv = modes_0 + [np.complex_(element) for element in corrs_0.flatten()]
@@ -232,7 +232,7 @@ class Uni00(DODMSystem):
 
         # calculate rates
         for i in range(2):
-            dalpha_dts.append((-kappas[i] + 1j * Deltas[i]) * alphas[i])
+            dalpha_dts.append((- kappas[i] + 1j * Deltas[i]) * alphas[i])
             dbeta_dts.append(1j * gs[i] * np.conjugate(alphas[i]) + (-gammas[i] - 1j * omega_ms[i]) * betas[i])
         dalpha_dts[0] += A_l
         dalpha_dts[1] += - 2 * np.sqrt(eta * kappas[0] * kappas[1]) * alphas[0] + (np.sqrt(eta) + np.sqrt(1 - eta)) * A_l

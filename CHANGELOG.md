@@ -1,5 +1,12 @@
 # Changelog
 
+## 2021/07/06 - 00 - Added Notebooks
+> Toolbox version 0.7.7
+* Added notebooks for adiabatic elimination in `bi_00` and `uni_00`.
+* Initialized `Uni02` system for simulation of adiabatic elimination.
+* Initialized `uni_02` scripts.
+* Updated `README`.
+
 ## 2021/07/04 - 00 - Version Upgrade
 > Toolbox version 0.7.7
 * Updated file paths in `bi_00` and `uni_00` notebooks.
