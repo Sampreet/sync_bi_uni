@@ -1,5 +1,12 @@
 # Changelog
 
+## 2021/07/07 - 00 - Minor Fixes
+> Toolbox version 0.7.7
+* Merged notebooks for analytical expressions to `uni_00`.
+* Updated script for phonon difference in `uni_02`.
+* Fixed real-valued parameters in `Uni02` and minor fixes to systems.
+* Updated `README`.
+
 ## 2021/07/06 - 01 - Updated Notebooks
 > Toolbox version 0.7.7
 * Renamed notebooks for adiabatic elimination in `bi_00` and `uni_00`.

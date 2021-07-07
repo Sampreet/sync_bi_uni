@@ -5,7 +5,7 @@
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-04'
-__updated__ = '2021-07-06'
+__updated__ = '2021-07-07'
 
 # dependencies
 import numpy as np
@@ -233,7 +233,7 @@ class Uni00(DODMSystem):
         # calculate rates
         for i in range(2):
             dalpha_dts.append((- kappas[i] + 1j * Deltas[i]) * alphas[i])
-            dbeta_dts.append(1j * gs[i] * np.conjugate(alphas[i]) + (-gammas[i] - 1j * omega_ms[i]) * betas[i])
+            dbeta_dts.append(1j * gs[i] * np.conjugate(alphas[i]) + (- gammas[i] - 1j * omega_ms[i]) * betas[i])
         dalpha_dts[0] += A_l
         dalpha_dts[1] += - 2 * np.sqrt(eta * kappas[0] * kappas[1]) * alphas[0] + (np.sqrt(eta) + np.sqrt(1 - eta)) * A_l
         

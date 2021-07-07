@@ -92,8 +92,8 @@ class Uni02(BaseSystem):
         chis.append(2 * np.conjugate(Gs[0]) * Gs[1] * eta / temp)
         chis.append(2 * np.conjugate(Gs[1]) * Gs[0] * eta / temp)
         # effective optomechanical damping
-        Gammas.append(np.conjugate(Gs[0]) * Gs[0] / kappas[0])
-        Gammas.append(np.conjugate(Gs[1]) * Gs[1] / kappas[1])
+        Gammas.append(np.real(np.conjugate(Gs[0]) * Gs[0]) / kappas[0])
+        Gammas.append(np.real(np.conjugate(Gs[1]) * Gs[1]) / kappas[1])
 
         # drift matrix
         if self.A is None or np.shape(self.A) != (4, 4):
@@ -175,14 +175,14 @@ class Uni02(BaseSystem):
         chis.append(2 * np.conjugate(Gs[0]) * Gs[1] * eta / temp)
         chis.append(2 * np.conjugate(Gs[1]) * Gs[0] * eta / temp)
         # effective optomechanical damping
-        Gammas.append(np.conjugate(Gs[0]) * Gs[0] / kappas[0])
-        Gammas.append(np.conjugate(Gs[1]) * Gs[1] / kappas[1])
+        Gammas.append(np.real(np.conjugate(Gs[0]) * Gs[0]) / kappas[0])
+        Gammas.append(np.real(np.conjugate(Gs[1]) * Gs[1]) / kappas[1])
 
         # noise correlation matrix
         D = np.zeros([4, 4], dtype=np.float_)
         for i in range(2):
-            D[2*i + 0][2*i + 0] = np.conjugate(etas[i]) * etas[i] / 2  + gammas[i] * (2 * n_ths[i] + 1)
-            D[2*i + 1][2*i + 1] = np.conjugate(etas[i]) * etas[i] / 2  + gammas[i] * (2 * n_ths[i] + 1)
+            D[2*i + 0][2*i + 0] = np.real(np.conjugate(etas[i]) * etas[i]) / 2  + gammas[i] * (2 * n_ths[i] + 1)
+            D[2*i + 1][2*i + 1] = np.real(np.conjugate(etas[i]) * etas[i]) / 2  + gammas[i] * (2 * n_ths[i] + 1)
         temp_same = - np.sqrt(eta) / 2 * (np.imag(etas[0]) * np.imag(etas[1]) - np.sqrt(eta) * np.real(etas[0]) * np.real(etas[1]))
         temp_diff = np.sqrt(eta) / 2 * (np.imag(etas[0]) * np.real(etas[1]) / 2 - np.sqrt(eta) * np.real(etas[0]) * np.imag(etas[1]))
         D[0][2] = temp_same

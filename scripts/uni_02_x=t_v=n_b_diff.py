@@ -52,26 +52,9 @@ params = {
     }
 }
 
-# initialize log
-init_log()
-
 # initialize system
 system = Uni02(params['system'])
 
 modes, corrs = system.get_modes_corrs_stationary(system.get_mode_rates, system.get_ivc, system.get_A)
-print(modes, corrs)
 
-# get correlation elements
-M, T = system.get_measure_dynamics(params['solver'], system.ode_func, system.get_ivc)
-print(np.transpose(M))
-
-# plotter
-plotter = MPLPlotter({
-    'X': T,
-    'Y': {
-        'var': 'QCM',
-        'val': [0, 1]
-    }
-}, params['plotter'])
-plotter.update(xs=[T, T], vs=np.transpose(M))
-plotter.show(True, 8.0, 3.25)
+print((corrs[3][3] + corrs[2][2] - corrs[1][1] - corrs[0][0]) / 2)
