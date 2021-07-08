@@ -5,7 +5,7 @@ import sys
 
 # qom modules
 from qom.ui import init_log
-from qom.ui.plotters import MPLPlotter
+from qom.loopers import XYLooper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
@@ -14,6 +14,20 @@ from systems.Uni02 import Uni02
 
 # all parameters
 params = {
+    'looper': {
+        'X': {
+            'var': 'delta',
+            'min': 0.0,
+            'max': 0.02,
+            'dim': 101
+        },
+        'Y': {
+            'var': 'eta',
+            'min': 0.5,
+            'max': 1.0,
+            'dim': 101
+        }
+    },
     'solver': {
         'show_progress': True,
         'cache': False,
@@ -40,13 +54,18 @@ params = {
         'omega_m': 1.0
     },
     'plotter': {
-        'type': 'lines',
-        'palette': 'RdBu',
+        'type': 'contourf',
+        'palette': 'Reds',
         'bins': 11,
-        'x_label': '$\omega_{mL} t$',
+        'x_label': '$\\delta / \\omega_{mL}$',
         'x_bound': 'both',
-        'x_ticks': [0, 25, 50, 75, 100],
-        'v_label': '$S_{p}, 5 \\times D_{G}$',
+        'x_ticks': [0.0, 0.01, 0.02],
+        'y_label': '$\\eta$',
+        'y_bound': 'both',
+        'y_ticks': [0.5, 0.75, 1.0],
+        'cbar_title': '$n_{n_{2}} - n_{n_{1}}$',
+        'cbar_ticks': [- 0.007119, - 0.007117, - 0.007115],
+        'cbar_position': 'top',
         'label_font_size': 22,
         'tick_font_size': 18
     }
@@ -55,6 +74,26 @@ params = {
 # initialize system
 system = Uni02(params['system'])
 
+# get steady state values
 modes, corrs = system.get_modes_corrs_stationary(system.get_mode_rates, system.get_ivc, system.get_A)
-
+# difference
 print((corrs[3][3] + corrs[2][2] - corrs[1][1] - corrs[0][0]) / 2)
+
+# initialize log
+init_log()
+
+# initialize system
+system = Uni02(params['system'])
+
+# function to obtain the difference between the phonon numbers
+def func_n_b_diff(system_params, val, logger, results):
+    # update system
+    system.params = system_params
+    # get difference
+    n_b_diff = system.get_n_b_diff()
+    # update results
+    results.append((val, n_b_diff))
+
+# looper 
+looper = XYLooper(func_n_b_diff, params)
+looper.loop(plot=True)

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2021/07/08 - 00 - Added Notebook
+> Toolbox version 0.7.7
+* Added notebooks for single frequency rotation to `uni_00`.
+* Updated script for phonon difference in `uni_02`.
+* Added phonon difference functioin in `Uni02`.
+* Updated `README`.
+
 ## 2021/07/07 - 00 - Minor Fixes
 > Toolbox version 0.7.7
 * Merged notebooks for analytical expressions to `uni_00`.

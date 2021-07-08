@@ -245,3 +245,48 @@ class Uni02(BaseSystem):
         mode_rates = [dalpha_dts[0], dalpha_dts[1]]
 
         return mode_rates
+    
+    def get_n_b_diff(self): 
+        """Function to calculate the difference between the phonon numbers of identical mechanical oscillator in the rotated frame.
+        
+        Returns
+        -------
+        n_b_diff : float
+            Difference between the phonon numbers.
+        """
+
+        A_l     = self.params['A_l']
+        delta   = self.params['delta']
+        eta     = self.params['eta']
+        g_0     = self.params['g_0s'][0]
+        gamma   = self.params['gammas'][0]
+        kappa   = self.params['kappas'][0]
+        n_th    = self.params['n_ths'][0]
+        omega   = self.params['omega_m']
+        temp    = np.sqrt(eta) * kappa
+
+        # classical steady state values
+        alpha_0 = A_l / (kappa - 1j * omega)
+        alpha_1 = ((np.sqrt(eta) + np.sqrt(1 - eta)) * A_l - 2 * temp * alpha_0) / (kappa - 1j * omega)
+
+        # initialize lists
+        Gs      = list()
+        Gammas  = list()
+
+        # effective coupling strengths
+        Gs.append(g_0 * alpha_0)
+        Gs.append(g_0 * alpha_1)
+        # effective optomechanical damping
+        Gammas.append(np.real(np.conjugate(Gs[0]) * Gs[0]) / kappa)
+        Gammas.append(np.real(np.conjugate(Gs[1]) * Gs[1]) / kappa)
+
+        # numerator of difference
+        n_b_diff_num = - gamma * (n_th + 1) * ((Gammas[0] - Gammas[1])
+        * ((Gammas[0] + Gammas[1]) * (Gammas[0] + Gammas[1] - 4 * gamma) + delta**2 + 4 * gamma**2) + 4 * Gammas[0] * Gammas[1] * eta * (Gammas[0] + Gammas[1] - 2 * gamma))
+        # denominator of difference
+        n_b_diff_den = (Gammas[0] - gamma) * (Gammas[1] - gamma) * ((Gammas[0] + Gammas[1]) * (Gammas[0] + Gammas[1] - 4 * gamma) + delta**2 + 4 * gamma**2)
+
+        # phonon number difference 
+        n_b_diff = n_b_diff_num / n_b_diff_den
+
+        return n_b_diff
