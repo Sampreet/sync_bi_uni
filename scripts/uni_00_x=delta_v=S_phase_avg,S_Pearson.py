@@ -47,7 +47,7 @@ params = {
     'plotter': {
         'type': 'lines',
         'palette': 'RdBu_r',
-        'bins': 11,
+        'bins': 21,
         'x_label': '$\\delta / \\omega_{mL}$',
         'x_bound': 'both',
         'x_ticks': [0.00, 0.002, 0.004, 0.006, 0.008, 0.01],
@@ -62,12 +62,33 @@ params = {
     }
 }
 
+# function to obtain the difference between the phonon numbers
+def func_n_b_diff(system_params, val, logger, results):
+    # update system
+    system = Uni00(system_params)
+    # get correlations
+    M_avg = system.get_measure_average(params['solver'], system.ode_func, system.get_ivc)
+    # calculate difference
+    n_b_diff = (M_avg[3] + M_avg[2] - M_avg[1] - M_avg[0]) / 2
+    # update results
+    results.append((val, n_b_diff))
+
+# get phonon number differences
+params['solver']['measure_type'] = 'corr_ele'
+params['solver']['idx_row'] = [2, 3, 6, 7]
+params['solver']['idx_col'] = [2, 3, 6, 7]
+looper = wrap_looper(Uni00, params, func_n_b_diff, 'XLooper', 'data/uni_00/n_b_diff_1e4-20pi')
+print(looper.get_thresholds('minmin'))
+n_b_diff = looper.results['V']
+print(n_b_diff)
+thres_diff = 125
+
 # get average phase synchronization
 params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_1e4-20pi')
+looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'data/uni_00/S_phase_avg_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
@@ -75,7 +96,7 @@ S_phase_avg = looper.results['V']
 params['solver']['measure_type'] = 'corr_ele'
 params['solver']['idx_row'] = [3, 3, 7]
 params['solver']['idx_col'] = [3, 7, 7]
-looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_Pearson_1e4-20pi')
+looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'data/uni_00/S_Pearson_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_Pearson = looper.results['V']
 
@@ -88,10 +109,10 @@ _colors = plotter.axes['Y'].colors
 # get axis
 ax = plotter.get_current_figure().axes[0]
 # mark regions
-ax.axvspan(0.0, 0.0023, color=_colors[1], alpha=0.5)
-ax.axvspan(0.0023, 0.0033, color=_colors[-3], alpha=0.5)
-ax.axvspan(0.0033, 0.0039, color=_colors[1], alpha=0.5)
-ax.axvspan(0.0039, 0.01, color=_colors[3], alpha=0.5)
+ax.axvspan(0.0, 0.0023, color=_colors[10], alpha=0.5)
+ax.axvspan(0.0023, 0.0033, color=_colors[4], alpha=0.5)
+ax.axvspan(0.0033, 0.0039, color=_colors[10], alpha=0.5)
+ax.axvspan(0.0039, 0.01, color=_colors[7], alpha=0.5)
 # zero line
 ax.plot(X, np.zeros(np.shape(X)), linestyle=':', color='k')
 # right axis for phase synchronization
@@ -103,4 +124,4 @@ ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
 # plot Pearson synchronization
 ax.plot(X, S_Pearson, linestyle='-', color=_colors[0])
 ax.scatter(X, S_Pearson, marker='o', color=_colors[0], s=15)
-plotter.show(True, 7.5, 2.5)
+plotter.show(True, 7.5, 3.0)

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2021/07/14 - 00 - Updated Notebooks
+> Toolbox version 0.7.7
+* Added notebooks for single frequency rotation to `bi_00`.
+* Updated all notebooks for consistency.
+* Updated plots with phonon number difference-based thresholding.
+* Added scripts for phonon number differences.
+* Updated scripts for `uni_00`.
+
 ## 2021/07/08 - 00 - Added Notebook
 > Toolbox version 0.7.7
 * Added notebooks for single frequency rotation to `uni_00`.

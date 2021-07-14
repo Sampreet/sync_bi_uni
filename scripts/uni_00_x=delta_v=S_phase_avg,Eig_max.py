@@ -48,7 +48,7 @@ params = {
     'plotter': {
         'type': 'lines',
         'palette': 'RdBu_r',
-        'bins': 11,
+        'bins': 21,
         'x_label': '$\\delta / \\omega_{mL}$',
         'x_bound': 'both',
         'x_ticks': [0.00, 0.002, 0.004, 0.006, 0.008, 0.01],
@@ -68,13 +68,13 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_phase_avg_1e4-20pi')
+looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'data/uni_00/S_phase_avg_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
 # get transverse Lyapunov exponents
 params['solver']['idx_eig'] = [6, 7]
-looper = wrap_looper(Uni01, params, 'eig_max', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/Eig_max_1e4-20pi')
+looper = wrap_looper(Uni01, params, 'eig_max', 'XLooper', 'data/uni_00/Eig_max_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 Eig_max = looper.results['V']
 
@@ -87,10 +87,10 @@ _colors = plotter.axes['Y'].colors
 # get axis
 ax = plotter.get_current_figure().axes[0]
 # mark regions
-ax.axvspan(0.0, 0.0023, color=_colors[1], alpha=0.5)
-ax.axvspan(0.0023, 0.0033, color=_colors[-3], alpha=0.5)
-ax.axvspan(0.0033, 0.0039, color=_colors[1], alpha=0.5)
-ax.axvspan(0.0039, 0.01, color=_colors[3], alpha=0.5)
+ax.axvspan(0.0, 0.0023, color=_colors[10], alpha=0.5)
+ax.axvspan(0.0023, 0.0033, color=_colors[-5], alpha=0.5)
+ax.axvspan(0.0033, 0.0039, color=_colors[10], alpha=0.5)
+ax.axvspan(0.0039, 0.01, color=_colors[-8], alpha=0.5)
 # zero line
 ax.plot(X, np.zeros(np.shape(X)), linestyle=':', color='k')
 # right axis for phase synchronization
@@ -100,6 +100,6 @@ ax_right.set_ylim(0, 0.16)
 ax_right.set_yticks([0, 0.08, 0.16])
 ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
 # plot transverse Lyapunov exponents
-ax.plot(X, Eig_max, linestyle='-', color=_colors[0])
-ax.scatter(X, Eig_max, marker='o', color=_colors[0], s=15)
-plotter.show(True, 7.5, 2.5)
+ax.plot(X, Eig_max, linestyle='-', color=_colors[-3])
+ax.scatter(X, Eig_max, marker='o', color=_colors[-3], s=15)
+plotter.show(True, 7.5, 3.0)
