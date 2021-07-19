@@ -1,5 +1,11 @@
 # Changelog
 
+## 2021/07/19 - 00 - Updated Notebooks
+> Toolbox version 0.7.7
+* Updated notebooks with phonon cross-correlations.
+* Removed redundant notebooks.
+* Minor fixes to `uni_00` scripts.
+
 ## 2021/07/14 - 00 - Updated Notebooks
 > Toolbox version 0.7.7
 * Added notebooks for single frequency rotation to `bi_00`.

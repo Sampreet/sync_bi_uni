@@ -62,27 +62,6 @@ params = {
     }
 }
 
-# function to obtain the difference between the phonon numbers
-def func_n_b_diff(system_params, val, logger, results):
-    # update system
-    system = Uni00(system_params)
-    # get correlations
-    M_avg = system.get_measure_average(params['solver'], system.ode_func, system.get_ivc)
-    # calculate difference
-    n_b_diff = (M_avg[3] + M_avg[2] - M_avg[1] - M_avg[0]) / 2
-    # update results
-    results.append((val, n_b_diff))
-
-# get phonon number differences
-params['solver']['measure_type'] = 'corr_ele'
-params['solver']['idx_row'] = [2, 3, 6, 7]
-params['solver']['idx_col'] = [2, 3, 6, 7]
-looper = wrap_looper(Uni00, params, func_n_b_diff, 'XLooper', 'data/uni_00/n_b_diff_1e4-20pi')
-print(looper.get_thresholds('minmin'))
-n_b_diff = looper.results['V']
-print(n_b_diff)
-thres_diff = 125
-
 # get average phase synchronization
 params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
