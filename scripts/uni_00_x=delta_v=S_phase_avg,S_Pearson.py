@@ -103,4 +103,4 @@ ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
 # plot Pearson synchronization
 ax.plot(X, S_Pearson, linestyle='-', color=_colors[0])
 ax.scatter(X, S_Pearson, marker='o', color=_colors[0], s=15)
-plotter.show(True, 7.5, 3.0)
+plotter.show(True, 8.0, 4.0)

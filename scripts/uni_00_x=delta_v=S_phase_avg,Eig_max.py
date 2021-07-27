@@ -102,4 +102,4 @@ ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
 # plot transverse Lyapunov exponents
 ax.plot(X, Eig_max, linestyle='-', color=_colors[-3])
 ax.scatter(X, Eig_max, marker='o', color=_colors[-3], s=15)
-plotter.show(True, 7.5, 3.0)
+plotter.show(True, 8.0, 4.0)

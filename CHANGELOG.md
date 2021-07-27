@@ -1,5 +1,11 @@
 # Changelog
 
+## 2021/07/27 - 00 - Updated Scripts
+> Toolbox version 0.7.7
+* Updated scripts for `bi_00` and `uni_00` systems.
+* Removed redundant scripts.
+* Removed redundant utils.
+
 ## 2021/07/19 - 00 - Updated Notebooks
 > Toolbox version 0.7.7
 * Updated notebooks with phonon cross-correlations.

@@ -44,9 +44,9 @@ params = {
         'type': 'lines',
         'palette': 'RdBu',
         'bins': 11,
-        'x_label': '$\omega_{mL} t$',
+        'x_label': '$t / \\tau$',
         'x_bound': 'both',
-        'x_ticks': [0, 250, 500, 750, 1000],
+        'x_ticks': [0, 200, 400, 600],
         'v_label': '$S_{p}, 5 \\times D_{G}$',
         'v_bound': 'both',
         'v_ticks': [0, 0.1, 0.2],
@@ -88,4 +88,4 @@ _xs = [T, T]
 _vs = [M_sync, [5 * m for m in M_disc]]
 axis.plot(_xs[0], _vs[0], color=_colors[-2])
 axis.plot(_xs[1], _vs[1], color=_colors[1])
-plotter.show(True, 8.0, 3.25)
+plotter.show(True, 8.0, 4.0)
