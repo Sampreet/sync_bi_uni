@@ -28,7 +28,7 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/0.0_10000.0_100001',
+        'cache_dir': 'H:/Workspace/data/uni_00/0.0_10000.0_100001',
         'method': 'ode',
         'measure_type': 'corr_ele',
         'idx_row': [3, 3, 7],
@@ -69,5 +69,5 @@ params = {
 }
 
 # get Pearson synchronization
-looper = wrap_looper(Uni00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/S_Pearson_1e4-20pi', True)
+looper = wrap_looper(Uni00, params, 'measure_average', 'XYLooper', 'H:/Workspace/data/uni_00/S_Pearson_1e4-20pi', True)
 print(looper.get_thresholds(thres_mode='minmax'))

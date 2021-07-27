@@ -28,7 +28,7 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/0.0_1000.0_10001',
+        'cache_dir': 'H:/Workspace/data/bi_00/0.0_1000.0_10001',
         'method': 'ode',
         'measure_type': 'qcm',
         'qcm_type': 'sync_phase',
@@ -70,5 +70,5 @@ params = {
 }
 
 # get average phase synchronization
-looper = wrap_looper(Bi00, params, 'measure_average', 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/S_phase_avg_1e3-20pi', True)
+looper = wrap_looper(Bi00, params, 'measure_average', 'XYLooper', 'H:/Workspace/data/bi_00/S_phase_avg_1e3-20pi', True)
 print(looper.get_thresholds(thres_mode='minmax'))

@@ -17,7 +17,7 @@ params = {
     'solver': {
         'show_progress': True,
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/0.0_1000.0_10001',
+        'cache_dir': 'H:/Workspace/data/bi_00/0.0_1000.0_10001',
         'method': 'ode',
         'measure_type': 'qcm',
         'qcm_type': 'sync_phase',

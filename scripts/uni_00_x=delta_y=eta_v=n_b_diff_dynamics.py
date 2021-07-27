@@ -29,7 +29,7 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/0.0_10000.0_100001',
+        'cache_dir': 'H:/Workspace/data/uni_00/0.0_10000.0_100001',
         'method': 'ode',
         'measure_type': 'corr_ele',
         'idx_row': [2, 3, 6, 7],
@@ -81,5 +81,5 @@ def func_n_b_diff(system_params, val, logger, results):
     results.append((val, n_b_diff))
 
 # looper 
-looper = wrap_looper(Uni00, params, func_n_b_diff, 'XYLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/n_b_diff_1e4-20pi', True)
+looper = wrap_looper(Uni00, params, func_n_b_diff, 'XYLooper', 'H:/Workspace/data/uni_00/n_b_diff_1e4-20pi', True)
 print(looper.get_thresholds('minmin'))

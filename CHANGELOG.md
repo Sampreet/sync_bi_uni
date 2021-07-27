@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021/07/27 - 01 - Moved Data
+> Toolbox version 0.7.7
+* Updated notebooks and scripts to support data move.
+
 ## 2021/07/27 - 00 - Updated Scripts
 > Toolbox version 0.7.7
 * Updated scripts for `bi_00` and `uni_00` systems.

@@ -25,7 +25,7 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/uni_00/0.0_10000.0_100001',
+        'cache_dir': 'H:/Workspace/data/uni_00/0.0_10000.0_100001',
         'method': 'ode',
         'range_min': 99371,
         'range_max': 100001,
@@ -67,7 +67,7 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'data/uni_00/S_phase_avg_1e4-20pi')
+looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/data/uni_00/S_phase_avg_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
@@ -75,7 +75,7 @@ S_phase_avg = looper.results['V']
 params['solver']['measure_type'] = 'corr_ele'
 params['solver']['idx_row'] = [3, 3, 7]
 params['solver']['idx_col'] = [3, 7, 7]
-looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'data/uni_00/S_Pearson_1e4-20pi')
+looper = wrap_looper(Uni00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/data/uni_00/S_Pearson_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_Pearson = looper.results['V']
 

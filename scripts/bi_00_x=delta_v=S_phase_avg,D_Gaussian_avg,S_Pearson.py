@@ -24,7 +24,7 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/0.0_1000.0_10001',
+        'cache_dir': 'H:/Workspace/data/bi_00/0.0_1000.0_10001',
         'method': 'ode',
         'range_min': 9371,
         'range_max': 10001,
@@ -61,7 +61,7 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'sync_phase'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/S_phase_avg_1e3-20pi')
+looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/data/bi_00/S_phase_avg_1e3-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_phase_avg = looper.results['V']
 
@@ -70,7 +70,7 @@ params['solver']['measure_type'] = 'qcm'
 params['solver']['qcm_type'] = 'discord'
 params['solver']['idx_mode_i'] = 1
 params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/D_Gaussian_avg_1e3-20pi')
+looper = wrap_looper(Bi00, params, 'measure_average', 'XLooper', 'H:/Workspace/data/bi_00/D_Gaussian_avg_1e3-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 D_Gaussian_avg = looper.results['V']
 
@@ -78,7 +78,7 @@ D_Gaussian_avg = looper.results['V']
 params['solver']['measure_type'] = 'corr_ele'
 params['solver']['idx_row'] = [3, 3, 7]
 params['solver']['idx_col'] = [3, 7, 7]
-looper = wrap_looper(Bi00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/VSCode/Python/sync_bi_uni/data/bi_00/S_Pearson_1e3-20pi')
+looper = wrap_looper(Bi00, params, 'measure_pearson', 'XLooper', 'H:/Workspace/data/bi_00/S_Pearson_1e3-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
 S_Pearson = looper.results['V']
 
