@@ -3,17 +3,16 @@ import os
 import sys
 
 # qom modules
-from qom.utils.wrappers import wrap_looper
+from qom.utils.looper import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
-from systems.Bi00 import Bi00
+from systems import Bi00
 
 # all parameters
 params = {
     'looper': {
-        'mode': 'serial',
         'X': {
             'var': 'delta',
             'min': - 0.02,
@@ -29,15 +28,13 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/data/bi_00/0.0_1000.0_10001',
-        'method': 'ode',
+        'method': 'zvode',
         'measure_type': 'corr_ele',
-        'idx_row': [2, 3, 6, 7],
-        'idx_col': [2, 3, 6, 7],
+        'idx_e': [(2, 2), (3, 3), (6, 6), (7, 7)],
         'range_min': 9371,
         'range_max': 10001,
-        't_min': 0,
-        't_max': 1000,
+        't_min': 0.0,
+        't_max': 1000.0,
         't_dim': 10001
     },
     'system': {
@@ -53,33 +50,39 @@ params = {
     },
     'plotter': {
         'type': 'pcolormesh',
-        'palette': 'blr',
-        'bins': 11,
         'x_label': '$\\delta / \\omega_{mL}$',
-        'x_bound': 'both',
         'x_ticks': [- 0.02, 0.00, 0.02],
-        'y_label': '$\\lambda / \\omega_{mL}$',
-        'y_bound': 'both',
-        'y_ticks': [0.0, 0.04, 0.08],
+        'y_label': '$\\lambda / \\kappa$',
+        'y_ticks': [0.0, 0.0375, 0.075],
+        'y_tick_labels': [0.0, 0.25, 0.5],
         'cbar_title': '$n_{b_{R}} - n_{b_{L}}$',
         'cbar_ticks': [-100.0, 0.0, 100],
-        'cbar_position': 'top',
-        'label_font_size': 22,
-        'tick_font_size': 18
+        'cbar_position': 'top'
     }
 }
 
 # function to obtain the difference between the phonon numbers
 def func_n_b_diff(system_params, val, logger, results):
     # update system
-    system = Bi00(system_params)
+    system = Bi00(params=system_params)
     # get correlations
-    M_avg = system.get_measure_average(params['solver'], system.ode_func, system.get_ivc)
+    M_avg = system.get_measure_average(solver_params=params['solver'])
     # calculate difference
     n_b_diff = (M_avg[3] + M_avg[2] - M_avg[1] - M_avg[0]) / 2
     # update results
     results.append((val, n_b_diff))
 
+# # function to obtain the difference between the phonon numbers
+# def func_n_b_diff(system_params, val, logger, results):
+#     # update system
+#     system = Bi00(system_params)
+#     # get steady state values
+#     _, corrs = system.get_modes_corrs_stationary(solver_params={})
+#     # calculate difference
+#     n_b_diff = (corrs[7][7] + corrs[6][6] - corrs[3][3] - corrs[2][2]) / 2
+#     # update results
+#     results.append((val, n_b_diff))
+
 # looper 
-looper = wrap_looper(Bi00, params, func_n_b_diff, 'XYLooper', 'H:/Workspace/data/bi_00/n_b_diff_1e3-20pi', True)
+looper = wrap_looper(SystemClass=Bi00, params=params, func=func_n_b_diff, looper='xy_looper', file_path='data/bi_00/n_b_diff_1e3-20pi', plot=True)
 print(looper.get_thresholds('minmin'))

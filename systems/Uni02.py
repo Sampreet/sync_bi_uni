@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Class to simulate a simple unidirectionally-coupled configuration of identical QOM systems with adiabatically eliminated optical modes."""
+"""Class to simulate a unidirectionally-coupled configuration of two QOM systems with adiabatically eliminated optical modes."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-07-06'
-__updated__ = '2021-07-06'
+__updated__ = '2021-10-20'
 
 # dependencies
 import numpy as np
@@ -14,25 +14,23 @@ import numpy as np
 from qom.systems import BaseSystem
 
 class Uni02(BaseSystem):
-    """Class to simulate a simple unidirectionally-coupled configuration of identical QOM systems with adiabatically eliminated optical modes.
+    """Class to simulate a unidirectionally-coupled configuration of two QOM systems with adiabatically eliminated optical modes.
 
     Parameters
     ----------
     params : dict
         Parameters for the system.
+    cb_update : callable, optional
+        Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is an integer and ``reset`` is a boolean.
     """
 
-    def __init__(self, params):
+    def __init__(self, params, cb_update=None):
         """Class constructor for Uni02."""
         
         # initialize super class
-        super().__init__(params)
-
-        # set attributes
-        self.code = 'uni_02'
-        self.name = 'Unidirectionally-coupled Identical Configuration with Adiabatically Eliminated Optical Modes'
-        self.num_modes = 2
-        # set parameters
+        super().__init__(params=params, code='uni_02', name='Unidirectionally-coupled QOM Systems with Adiabatically Eliminated Optical Modes', num_modes=2, cb_update=cb_update)
+        
+        # default parameters
         self.params = {
             'A_l': params.get('A_l', 52.0),
             'Delta_0': params.get('Delta_0', 1.0),
@@ -44,10 +42,11 @@ class Uni02(BaseSystem):
             'n_ths': params.get('n_ths', [0, 0]),
             'omega_m': params.get('omega_m', 1.0),
         }
-        # drift matrix
+
+        # matrices
         self.A = None
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, params, t=None):
         """Function to obtain the drift matrix.
 
         Parameters
@@ -56,8 +55,8 @@ class Uni02(BaseSystem):
             Values of the modes.
         params : list
             Constant parameters.
-        t : float
-            Time at which the rates are calculated.
+        t : float, optional
+            Time at which the drift matrix is calculated.
         
         Returns
         -------
@@ -80,18 +79,14 @@ class Uni02(BaseSystem):
         alphas.append(A_l / (kappas[0] - 1j * omegas[0]))
         alphas.append(((np.sqrt(eta) + np.sqrt(1 - eta)) * A_l - 2 * temp * alphas[0]) / (kappas[1] - 1j * omegas[1]))
 
-        # initialize lists
+        # effective values
         Gs      = list()
         chis    = list()
         Gammas  = list()
-
-        # effective coupling strengths
         Gs.append(g_0s[0] * alphas[0])
         Gs.append(g_0s[1] * alphas[1])
-        # cross-oscillator coefficients
         chis.append(2 * np.conjugate(Gs[0]) * Gs[1] * eta / temp)
         chis.append(2 * np.conjugate(Gs[1]) * Gs[0] * eta / temp)
-        # effective optomechanical damping
         Gammas.append(np.real(np.conjugate(Gs[0]) * Gs[0]) / kappas[0])
         Gammas.append(np.real(np.conjugate(Gs[1]) * Gs[1]) / kappas[1])
 
@@ -207,7 +202,7 @@ class Uni02(BaseSystem):
 
         return iv, c
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, params, t=None):
         """Function to obtain the rates of the optical modes.
 
         Parameters
@@ -216,7 +211,7 @@ class Uni02(BaseSystem):
             Values of the modes.
         params : list
             Constants parameters.
-        t : float
+        t : float, optional
             Time at which the rates are calculated.
         
         Returns
@@ -269,14 +264,11 @@ class Uni02(BaseSystem):
         alpha_0 = A_l / (kappa - 1j * omega)
         alpha_1 = ((np.sqrt(eta) + np.sqrt(1 - eta)) * A_l - 2 * temp * alpha_0) / (kappa - 1j * omega)
 
-        # initialize lists
+        # effective values
         Gs      = list()
         Gammas  = list()
-
-        # effective coupling strengths
         Gs.append(g_0 * alpha_0)
         Gs.append(g_0 * alpha_1)
-        # effective optomechanical damping
         Gammas.append(np.real(np.conjugate(Gs[0]) * Gs[0]) / kappa)
         Gammas.append(np.real(np.conjugate(Gs[1]) * Gs[1]) / kappa)
 

@@ -3,19 +3,20 @@ import os
 import sys
 
 # qom modules
-from qom.utils.wrappers import wrap_looper
+from qom.ui.plotters import MPLPlotter
+from qom.utils.looper import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
-from systems.Uni00 import Uni00
+from systems import Uni00
 
 # all parameters
 params = {
     'looper': {
         'X': {
             'var': 'delta',
-            'min': 0.0,
+            'min': 0.00,
             'max': 0.02,
             'dim': 101
         },
@@ -28,15 +29,11 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/data/uni_00/0.0_10000.0_100001',
-        'method': 'ode',
-        'measure_type': 'corr_ele',
-        'idx_row': [3, 3, 7],
-        'idx_col': [3, 7, 7],
-        'range_min': 99371,
-        'range_max': 100001,
-        't_min': 0,
-        't_max': 10000,
+        'method': 'zvode',
+        'method_le': 'svd',
+        'num_iters': 10000,
+        't_min': 0.0,
+        't_max': 10000.0,
         't_dim': 100001
     },
     'system': {
@@ -51,23 +48,27 @@ params = {
         'omega_m': 1.0
     },
     'plotter': {
-        'type': 'contourf',
-        'palette': 'RdBu_r',
-        'bins': 11,
+        'type': 'pcolormesh',
         'x_label': '$\\delta / \\omega_{mL}$',
-        'x_bound': 'both',
-        'x_ticks': [0.0, 0.01, 0.02],
+        'x_ticks': [0.00, 0.01, 0.02],
         'y_label': '$\\eta$',
-        'y_bound': 'both',
         'y_ticks': [0.5, 0.75, 1.0],
-        'cbar_title': '$C$',
-        'cbar_ticks': [-1, 0, 1],
+        'cbar_title': '$MLE$',
         'cbar_position': 'top',
-        'label_font_size': 22,
-        'tick_font_size': 18
+        'cbar_ticks': [0, 0.001, 0.002]
     }
 }
 
-# get Pearson synchronization
-looper = wrap_looper(Uni00, params, 'measure_average', 'XYLooper', 'H:/Workspace/data/uni_00/S_Pearson_1e4-20pi', True)
-print(looper.get_thresholds(thres_mode='minmax'))
+# debug
+print(params['looper'])
+
+# wrapper
+looper = wrap_looper(SystemClass=Uni00, params=params, func='les', looper='xy_looper', file_path='data/uni_00/les_1e4+10000')
+
+# plotter
+plotter = MPLPlotter(axes={
+    'X': params['looper']['X'],
+    'Y': params['looper']['Y']
+}, params=params['plotter'])
+plotter.update(vs=[[max(e) for e in r] for r in looper.results['V']])
+plotter.show(True)

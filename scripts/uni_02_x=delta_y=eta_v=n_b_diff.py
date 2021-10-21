@@ -3,20 +3,19 @@ import os
 import sys
 
 # qom modules
-from qom.utils.wrappers import wrap_looper
+from qom.utils.looper import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
-from systems.Uni00 import Uni00
+from systems import Uni02
 
 # all parameters
 params = {
     'looper': {
-        'mode': 'multithread',
         'X': {
             'var': 'delta',
-            'min': 0.00,
+            'min': 0.0,
             'max': 0.02,
             'dim': 101
         },
@@ -40,32 +39,29 @@ params = {
     },
     'plotter': {
         'type': 'contourf',
-        'palette': 'blr',
-        'bins': 11,
         'x_label': '$\\delta / \\omega_{mL}$',
-        'x_bound': 'both',
-        'x_ticks': [0.00, 0.01, 0.02],
+        'x_ticks': [0.0, 0.01, 0.02],
         'y_label': '$\\eta$',
-        'y_bound': 'both',
         'y_ticks': [0.5, 0.75, 1.0],
         'cbar_title': '$n_{b_{R}} - n_{b_{L}}$',
-        'cbar_ticks': [0.006, 0.012, 0.018],
-        'cbar_position': 'top',
-        'label_font_size': 22,
-        'tick_font_size': 18
+        'cbar_ticks': [-0.02, -0.01, 0.0],
+        'cbar_position': 'top'
     }
 }
 
 # function to obtain the difference between the phonon numbers
 def func_n_b_diff(system_params, val, logger, results):
     # update system
-    system = Uni00(system_params)
-    # get steady state values
-    _, corrs = system.get_modes_corrs_stationary(system.get_mode_rates, system.get_ivc, system.get_A)
-    # calculate difference
-    n_b_diff = (corrs[7][7] + corrs[6][6] - corrs[3][3] - corrs[2][2]) / 2
+    system = Uni02(system_params)
+    # get difference
+    n_b_diff = system.get_n_b_diff()
+    # # get steady state values
+    # _, corrs = system.get_modes_corrs_stationary(solver_params={})
+    # # difference
+    # n_b_diff = (corrs[3][3] + corrs[2][2] - corrs[1][1] - corrs[0][0]) / 2
     # update results
     results.append((val, n_b_diff))
 
 # looper 
-looper = wrap_looper(Uni00, params, func_n_b_diff, 'XYLooper', plot=True)
+looper = wrap_looper(SystemClass=Uni02, params=params, func=func_n_b_diff, looper='xy_looper', plot=True)
+print(looper.get_thresholds('minmin'))

@@ -5,13 +5,12 @@ import sys
 
 # qom modules
 from qom.ui.plotters import MPLPlotter
-from qom.utils.wrappers import wrap_looper
+from qom.utils.looper import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
-from systems.Uni00 import Uni00
-from systems.Uni01 import Uni01
+from systems import Uni00
 
 # all parameters
 params = {
@@ -26,12 +25,11 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/data/uni_00/0.0_10000.0_100001',
-        'method': 'ode',
+        'method': 'zvode',
         'range_min': 99371,
         'range_max': 100001,
-        't_min': 0,
-        't_max': 10000,
+        't_min': 0.0,
+        't_max': 10000.0,
         't_dim': 100001
     },
     'system': {
@@ -50,47 +48,44 @@ params = {
         'palette': 'RdBu_r',
         'bins': 21,
         'x_label': '$\\delta / \\omega_{mL}$',
-        'x_bound': 'both',
         'x_ticks': [0.00, 0.002, 0.004, 0.006, 0.008, 0.01],
         'y_sizes': [10, 10],
-        'y_styles': ['--', '-', ':'],
-        'v_label': '$10^{3} \\times TLE$',
-        'v_bound': 'both',
-        'v_ticks': [-0.0015, -0.001, -0.0005, 0.000, 0.0005],
-        'v_tick_labels': ['', -1, '', 0, ''],
-        'label_font_size': 22,
-        'tick_font_size': 18
+        'y_styles': ['-', '--', ':'],
+        'v_label': '$C$',
+        'v_ticks': [-1, -0.5, 0, 0.5, 1],
+        'v_tick_labels': [-1, '', 0, '', 1],
+        'width': 8.0,
+        'height': 4.0
     }
 }
 
 # get average phase synchronization
-params['solver']['measure_type'] = 'qcm'
-params['solver']['qcm_type'] = 'sync_phase'
-params['solver']['idx_mode_i'] = 1
-params['solver']['idx_mode_j'] = 3
-looper = wrap_looper(Uni00, params, 'measure_average', 'XLooper', 'H:/Workspace/data/uni_00/S_phase_avg_1e4-20pi')
+params['solver']['measure_type'] = 'sync_p'
+params['solver']['idx_e'] = (1, 3)
+looper = wrap_looper(SystemClass=Uni00, params=params, func='mav', looper='x_looper', file_path='data/uni_00/sync_p_avg_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
-S_phase_avg = looper.results['V']
+M_0 = looper.results['V']
 
-# get transverse Lyapunov exponents
-params['solver']['idx_eig'] = [6, 7]
-looper = wrap_looper(Uni01, params, 'eig_max', 'XLooper', 'H:/Workspace/data/uni_00/Eig_max_1e4-20pi')
+# get Pearson synchronization
+params['solver']['measure_type'] = 'corr_ele'
+params['solver']['idx_e'] = [(3, 3), (3, 7), (7, 7)]
+looper = wrap_looper(SystemClass=Uni00, params=params, func='pcc', looper='x_looper', file_path='data/uni_00/pcc_1e4-20pi')
 print(looper.get_thresholds(thres_mode='minmax'))
-Eig_max = looper.results['V']
+M_1 = looper.results['V']
 
 # plotter
 X = looper.axes['X']['val']
 plotter = MPLPlotter({
     'X': X
 }, params['plotter'])
-_colors = plotter.axes['Y'].colors
+_colors = plotter.get_colors(palette=params['plotter']['palette'], bins=params['plotter']['bins'])
 # get axis
 ax = plotter.get_current_figure().axes[0]
 # mark regions
 ax.axvspan(0.0, 0.0023, color=_colors[10], alpha=0.5)
-ax.axvspan(0.0023, 0.0033, color=_colors[-5], alpha=0.5)
+ax.axvspan(0.0023, 0.0033, color=_colors[4], alpha=0.5)
 ax.axvspan(0.0033, 0.0039, color=_colors[10], alpha=0.5)
-ax.axvspan(0.0039, 0.01, color=_colors[-8], alpha=0.5)
+ax.axvspan(0.0039, 0.01, color=_colors[7], alpha=0.5)
 # zero line
 ax.plot(X, np.zeros(np.shape(X)), linestyle=':', color='k')
 # right axis for phase synchronization
@@ -98,8 +93,8 @@ ax_right = plotter.get_twin_axis()
 ax_right.set_ylabel('$\\langle S_{p} \\rangle$')
 ax_right.set_ylim(0, 0.16)
 ax_right.set_yticks([0, 0.08, 0.16])
-ax_right.plot(X, S_phase_avg, linestyle='--', color='k')
-# plot transverse Lyapunov exponents
-ax.plot(X, Eig_max, linestyle='-', color=_colors[-3])
-ax.scatter(X, Eig_max, marker='o', color=_colors[-3], s=15)
-plotter.show(True, 8.0, 4.0)
+ax_right.plot(X, M_0, linestyle='--', color='k')
+# plot Pearson synchronization
+ax.plot(X, M_1, linestyle='-', color=_colors[0])
+ax.scatter(X, M_1, marker='o', color=_colors[0], s=15)
+plotter.show(True)

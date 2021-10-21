@@ -3,12 +3,13 @@ import os
 import sys
 
 # qom modules
-from qom.utils.wrappers import wrap_looper
+from qom.ui.plotters import MPLPlotter
+from qom.utils.looper import wrap_looper
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
 # import system
-from systems.Bi00 import Bi00
+from systems import Bi00
 
 # all parameters
 params = {
@@ -28,15 +29,11 @@ params = {
     },
     'solver': {
         'cache': True,
-        'cache_dir': 'H:/Workspace/data/bi_00/0.0_1000.0_10001',
-        'method': 'ode',
-        'measure_type': 'corr_ele',
-        'idx_row': [3, 3, 7],
-        'idx_col': [3, 7, 7],
-        'range_min': 9371,
-        'range_max': 10001,
-        't_min': 0,
-        't_max': 1000,
+        'method': 'zvode',
+        'method_le': 'svd',
+        'num_iters': 10000,
+        't_min': 0.0,
+        't_max': 1000.0,
         't_dim': 10001
     },
     'system': {
@@ -51,23 +48,28 @@ params = {
         'omega_m': 1.0
     },
     'plotter': {
-        'type': 'contourf',
-        'palette': 'Blues',
-        'bins': 11,
+        'type': 'pcolormesh',
         'x_label': '$\\delta / \\omega_{mL}$',
-        'x_bound': 'both',
         'x_ticks': [-0.02, 0.0, 0.02],
-        'y_label': '$\\lambda / \\omega_{mL}$',
-        'y_bound': 'both',
-        'y_ticks': [0.0, 0.04, 0.08],
-        'cbar_title': '$C$',
-        'cbar_ticks': [0.0, 0.5, 1.0],
+        'y_label': '$\\lambda / \\kappa$',
+        'y_ticks': [0.0, 0.0375, 0.075],
+        'y_tick_labels': [0.0, 0.25, 0.5],
+        'cbar_title': '$MLE$',
         'cbar_position': 'top',
-        'label_font_size': 22,
-        'tick_font_size': 18
+        'cbar_ticks': [0, 0.0005, 0.001]
     }
 }
 
-# get Pearson synchronization
-looper = wrap_looper(Bi00, params, 'measure_pearsonn', 'XYLooper', 'H:/Workspace/data/bi_00/S_Pearson_1e3-20pi', True)
-print(looper.get_thresholds(thres_mode='minmax'))
+# debug
+print(params['looper'])
+
+# wrapper
+looper = wrap_looper(SystemClass=Bi00, params=params, func='les', looper='xy_looper', file_path='data/bi_00/les_1e3+10000')
+
+# plotter
+plotter = MPLPlotter(axes={
+    'X': params['looper']['X'],
+    'Y': params['looper']['Y']
+}, params=params['plotter'])
+plotter.update(vs=[[max(e) for e in r] for r in looper.results['V']])
+plotter.show(True)

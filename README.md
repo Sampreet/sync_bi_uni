@@ -1,9 +1,9 @@
-# Quantum Synchronization Transition in Optically Coupled Optomechanical Oscillators
+# Switching of Quantum Synchronization in Coupled Optomechanical Oscillators
 
 Author | Affiliation
 ------------ | -------------
-[Subhadeep Chakraborty](https://scholar.google.co.in/citations?user=o5n-rDUAAAAJ&hl=en) | ICFAI University Tripura, Tripura-799210, India
 [Sampreet Kalita](https://www.iitg.ac.in/stud/sampreet/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
+[Subhadeep Chakraborty](https://scholar.google.co.in/citations?user=o5n-rDUAAAAJ&hl=en) | ICFAI University Tripura, Tripura-799210, India
 [Amarendra Kumar Sarma](https://www.iitg.ac.in/aksarma/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
 
 ## About the Work
@@ -16,6 +16,7 @@ We investigate the phenomenon of quantum synchronization of mechanical oscillato
 We further investigate the stability of the collective modes of the two mechanical oscillators to understand the synchronization phase transitions.
 
 ## Structure of the Repository
+
 ```
 ROOT_DIR/
 |
@@ -38,6 +39,7 @@ ROOT_DIR/
 │   └───...
 │
 ├───.gitignore
+├───CHANGELOG.md
 ├───GUI.py
 └───README.md
 ```
@@ -56,13 +58,13 @@ conda create -n qom python=3
 conda activate qom
 ```
 
-This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) via Python Package Index using `pip`:
+This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) which can be installed from the Python Package Index via `pip` using:
 
 ```bash
 pip install -i https://test.pypi.org/simple/ qom
 ```
 
-Alternatively, [clone](https://github.com/Sampreet/qom) or [download](https://github.com/Sampreet/qom/archive/refs/heads/master.zip) as `.zip` and extract the contents:
+Alternatively, [clone](https://github.com/Sampreet/qom) or [download](https://github.com/Sampreet/qom/archive/refs/heads/master.zip) as `.zip` and extract the contents.
 Now, execute the following from *outside* the top-level directory, `ROOT_DIR`, inside which `setup.py` is located:
 
 ```bash
@@ -82,8 +84,7 @@ Here, `foo_bar.py` is the name of the script.
 To run in GUI mode using `PowerShell` or `bash`, navigate to `ROOT_DIR` and execute:
 
 ```bash
-python -c 'from qom.ui import run; run()'
+python -c 'from qom.ui.gui import run; run()'
 ```
 
-Alternatively, run `GUI.py`.
-
+Alternatively, run `GUI.py` from within the directory.

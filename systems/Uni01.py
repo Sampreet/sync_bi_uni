@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Class to simulate a unidirectionally-coupled configuration of QOM systems with Plus-Minus modes."""
+"""Class to simulate a unidirectionally-coupled configuration of two QOM systems with Plus-Minus modes."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-01-28'
-__updated__ = '2021-07-07'
+__updated__ = '2021-10-20'
 
 # dependencies
 import numpy as np
@@ -14,27 +14,28 @@ import numpy as np
 from qom.systems import DODMSystem
 
 class Uni01(DODMSystem):
-    """Class to simulate a simple unidirectionally-coupled configuration of QOM systems with Plus-Minus modes.
+    """Class to simulate a unidirectionally-coupled configuration of two QOM systems with Plus-Minus modes.
 
     Parameters
     ----------
     params : dict
         Parameters for the system.
+    cb_update : callable, optional
+        Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is an integer and ``reset`` is a boolean.
     """
 
-    def __init__(self, params):
+    def __init__(self, params, cb_update=None):
         """Class constructor for Uni01."""
         
         # initialize super class
-        super().__init__(params)
+        super().__init__(params=params, cb_update=cb_update)
 
-        # update code and name
+        # set attributes
         self.code = 'uni_01'
-        self.name = 'Unidirectionally-couple configuration with Plus-Minus Modes'
-        
+        self.name = 'Unidirectionally-coupled QOM Systems with Plus-Minus Modes'
         # default parameters
         self.params = {
-            'A_l': params.get('A_l', 70.0),
+            'A_l': params.get('A_l', 52.0),
             'Delta_0': params.get('Delta_0', 1.0),
             'delta': params.get('delta', 0.005),
             'eta': params.get('eta', 0.75),
@@ -44,10 +45,11 @@ class Uni01(DODMSystem):
             'n_ths': params.get('n_ths', [0, 0]),
             'omega_m': params.get('omega_m', 1.0),
         }
-        # drift matrix
+
+        # matrices
         self.A = None
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, params, t=None):
         """Function to obtain the drift matrix.
 
         Parameters
@@ -56,12 +58,12 @@ class Uni01(DODMSystem):
             Values of the modes.
         params : list
             Constant parameters.
-        t : float
-            Time at which the rates are calculated.
+        t : float, optional
+            Time at which the drift matrix is calculated.
         
         Returns
         -------
-        A : list
+        A : numpy.ndarray
             Drift matrix.
         """
 
@@ -76,11 +78,9 @@ class Uni01(DODMSystem):
         betas   = [modes[1], modes[3]]
         temp    = np.sqrt(eta * kappas[0] * kappas[1])
 
-        # initialize lists
+        # effective values
         Deltas  = list()
         gs      = list()
-
-        # effective detunings
         for i in range(2):
             Deltas.append(Delta_0s[i] + 2 * g_0s[i] * np.real(betas[i]))
             gs.append(g_0s[i] * alphas[i])
@@ -91,26 +91,26 @@ class Uni01(DODMSystem):
         for i in range(2):
             # sign of mode
             _sign = - 2 * (i - 0.5)
-            # X
+            # X quadratures
             self.A[4*i + 0][0] = - kappas[0] / 2 - _sign * kappas[1] / 2 - _sign * temp
             self.A[4*i + 0][1] = - Deltas[0] / 2 - _sign * Deltas[1] / 2
             self.A[4*i + 0][2] = - np.imag(gs[0]) - _sign * np.imag(gs[1])
             self.A[4*i + 0][4] = - kappas[0] / 2 + _sign * kappas[1] / 2 - _sign * temp
             self.A[4*i + 0][5] = - Deltas[0] / 2 + _sign * Deltas[1] / 2
             self.A[4*i + 0][6] = - np.imag(gs[0]) + _sign * np.imag(gs[1])
-            # Y
+            # Y quadratures
             self.A[4*i + 1][0] = Deltas[0] / 2 + _sign * Deltas[1] / 2
             self.A[4*i + 1][1] = - kappas[0] / 2 - _sign * kappas[1] / 2 - _sign * temp
             self.A[4*i + 1][2] = np.real(gs[0]) + _sign * np.real(gs[1])
             self.A[4*i + 1][4] = Deltas[0] / 2 - _sign * Deltas[1] / 2
             self.A[4*i + 1][5] = - kappas[0] / 2 + _sign * kappas[1] / 2 - _sign * temp
             self.A[4*i + 1][6] = np.real(gs[0]) - _sign * np.real(gs[1])
-            # Q
+            # Q quadratures
             self.A[4*i + 2][2] = - gammas[0] / 2 - _sign * gammas[1] / 2
             self.A[4*i + 2][3] = omega_ms[0] / 2 + _sign * omega_ms[1] / 2
             self.A[4*i + 2][6] = - gammas[0] / 2 + _sign * gammas[1] / 2
             self.A[4*i + 2][7] = omega_ms[0] / 2 - _sign * omega_ms[1] / 2
-            # P
+            # P quadratures
             self.A[4*i + 3][0] = np.real(gs[0]) + _sign * np.real(gs[1])
             self.A[4*i + 3][1] = np.imag(gs[0]) + _sign * np.imag(gs[1])
             self.A[4*i + 3][2] = - omega_ms[0] / 2 - _sign * omega_ms[1] / 2
@@ -218,7 +218,7 @@ class Uni01(DODMSystem):
 
         return iv, c
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, params, t=None):
         """Function to obtain the rates of the optical and mechanical modes.
 
         Parameters
@@ -227,7 +227,7 @@ class Uni01(DODMSystem):
             Values of the modes.
         params : list
             Constants parameters.
-        t : float
+        t : float, optional
             Time at which the rates are calculated.
         
         Returns
@@ -247,18 +247,18 @@ class Uni01(DODMSystem):
         alphas  = [modes[0], modes[2]]
         betas   = [modes[1], modes[3]]
 
-        # initialize lists
+        # effective values
         Deltas      = list()
         gs          = list()
-        dalpha_dts  = list()
-        dbeta_dts   = list()
-
-        # effective detunings
         for i in range(2):
             Deltas.append(Delta_0s[i] + 2 * g_0s[i] * np.real(betas[i]))
             gs.append(g_0s[i] * alphas[i])
 
-        # calculate rates
+        # initialize lists
+        dalpha_dts  = list()
+        dbeta_dts   = list()
+
+        # calculate mode rates
         for i in range(2):
             dalpha_dts.append((- kappas[i] + 1j * Deltas[i]) * alphas[i])
             dbeta_dts.append(1j * gs[i] * np.conjugate(alphas[i]) + (- gammas[i] - 1j * omega_ms[i]) * betas[i])

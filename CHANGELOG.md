@@ -1,5 +1,11 @@
 # Changelog
 
+## 2021/10/21 - 00 - Version Upgrade
+> Toolbox version 0.8.0
+* Revamped all scripts for `qom` version 0.8.0.
+* Updated systems with progressbar support for GUI.
+* Updated `GUI` and `README`.
+
 ## 2021/07/27 - 01 - Moved Data
 > Toolbox version 0.7.7
 * Updated notebooks and scripts to support data move.

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Class to simulate a simple bidirectionally-coupled configuration of QOM systems."""
+"""Class to simulate a simple optically-coupled configuration of two QOM systems."""
 
 __authors__ = ['Sampreet Kalita']
 __created__ = '2020-06-03'
-__updated__ = '2021-07-06'
+__updated__ = '2021-10-20'
 
 # dependencies
 import numpy as np
@@ -14,23 +14,25 @@ import numpy as np
 from qom.systems import DODMSystem
 
 class Bi00(DODMSystem):
-    """Class to simulate a simple bidirectionally-coupled configuration of QOM systems.
+    """Class to simulate a simple optically-coupled configuration of two QOM systems.
 
     Parameters
     ----------
     params : dict
         Parameters for the system.
+    cb_update : callable, optional
+        Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is an integer and ``reset`` is a boolean.
     """
 
-    def __init__(self, params):
+    def __init__(self, params, cb_update=None):
         """Class constructor for Bi00."""
         
         # initialize super class
-        super().__init__(params)
+        super().__init__(params=params, cb_update=cb_update)
 
         # set attributes
         self.code = 'bi_00'
-        self.name = 'Bidirectionally-coupled Configuration'  
+        self.name = 'Two Optically-coupled QOM Systems'  
         # default parameters
         self.params = {
             'A_l': params.get('A_l', 52.0),
@@ -43,10 +45,11 @@ class Bi00(DODMSystem):
             'n_ths': params.get('n_ths', [0, 0]),
             'omega_m': params.get('omega_m', 1.0),
         }
-        # drift matrix
+        
+        # matrices
         self.A = None
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, params, t=None):
         """Function to obtain the drift matrix.
 
         Parameters
@@ -55,12 +58,12 @@ class Bi00(DODMSystem):
             Values of the modes.
         params : list
             Constant parameters.
-        t : float
-            Time at which the rates are calculated.
+        t : float, optional
+            Time at which the drift matrix is calculated.
         
         Returns
         -------
-        A : list
+        A : numpy.ndarray
             Drift matrix.
         """
         
@@ -74,11 +77,9 @@ class Bi00(DODMSystem):
         alphas  = [modes[0], modes[2]]
         betas   = [modes[1], modes[3]]
 
-        # initialize lists
+        # effective values
         Deltas  = list()
         gs      = list()
-
-        # effective detunings
         for i in range(2):
             Deltas.append(Delta_0s[i] + 2 * g_0s[i] * np.real(betas[i]))
             gs.append(g_0s[i] * alphas[i])
@@ -87,19 +88,20 @@ class Bi00(DODMSystem):
         if self.A is None or np.shape(self.A) != (8, 8):
             self.A = np.zeros([8, 8], dtype=np.float_)
         for i in range(2):
+            # X quadratures
             self.A[4*i + 0][4*i + 0] = - kappas[i]
             self.A[4*i + 0][4*i + 1] = - Deltas[i]
             self.A[4*i + 0][4*i + 2] = - 2 * np.imag(gs[i])
             self.A[4*i + 0][4*(1 - i) + 1] = - lamb
-
+            # Y quadratures
             self.A[4*i + 1][4*i + 0] = Deltas[i]
             self.A[4*i + 1][4*i + 1] = - kappas[i]
             self.A[4*i + 1][4*i + 2] = 2 * np.real(gs[i])
             self.A[4*i + 1][4*(1 - i) + 0] = lamb
-
+            # Q quadratures
             self.A[4*i + 2][4*i + 2] = - gammas[i]
             self.A[4*i + 2][4*i + 3] = omega_ms[i]
-
+            # P quadratures
             self.A[4*i + 3][4*i + 0] = 2 * np.real(gs[i])
             self.A[4*i + 3][4*i + 1] = 2 * np.imag(gs[i])
             self.A[4*i + 3][4*i + 2] = - omega_ms[i]
@@ -184,7 +186,7 @@ class Bi00(DODMSystem):
 
         return iv, c
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, params, t=None):
         """Function to obtain the rates of the optical and mechanical modes.
 
         Parameters
@@ -193,7 +195,7 @@ class Bi00(DODMSystem):
             Values of the modes.
         params : list
             Constants parameters.
-        t : float
+        t : float, optional
             Time at which the rates are calculated.
         
         Returns
@@ -213,18 +215,18 @@ class Bi00(DODMSystem):
         alphas  = [modes[0], modes[2]]
         betas   = [modes[1], modes[3]]
 
-        # initialize lists
+        # effective values
         Deltas      = list()
         gs          = list()
-        dalpha_dts  = list()
-        dbeta_dts   = list()
-
-        # effective detunings
         for i in range(2):
             Deltas.append(Delta_0s[i] + 2 * g_0s[i] * np.real(betas[i]))
             gs.append(g_0s[i] * alphas[i])
 
-        # calculate rates
+        # initialize lists
+        dalpha_dts  = list()
+        dbeta_dts   = list()
+
+        # calculate mode rates
         for i in range(2):
             dalpha_dts.append((- kappas[i] + 1j * Deltas[i]) * alphas[i] + 1j * lamb * alphas[1 - i] + A_l)
             dbeta_dts.append(1j * gs[i] * np.conjugate(alphas[i]) + (- gammas[i] - 1j * omega_ms[i]) * betas[i])
