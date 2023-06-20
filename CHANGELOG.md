@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/06/20 - 00 - Version Upgrade
+> Toolbox version 1.0.0
+* Revamped all contents for `qom-v1.0.0`.
+* Updated `.gitignore` and `README`.
+
 ## 2021/10/21 - 00 - Version Upgrade
 > Toolbox version 0.8.0
 * Revamped all scripts for `qom` version 0.8.0.

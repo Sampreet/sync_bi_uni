@@ -2,8 +2,7 @@
 .vscode/
 
 # extra folders
-data*/
-img*/
+cache*/
 temp*/
 
 # Byte-compiled / optimized / DLL files

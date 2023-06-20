@@ -1,46 +1,54 @@
 # Switching of Quantum Synchronization in Coupled Optomechanical Oscillators
 
+[![Version](https://img.shields.io/badge/version-3.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
+[![Version](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
+
 Author | Affiliation
 ------------ | -------------
 [Sampreet Kalita](https://www.iitg.ac.in/stud/sampreet/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
-[Subhadeep Chakraborty](https://scholar.google.co.in/citations?user=o5n-rDUAAAAJ&hl=en) | ICFAI University Tripura, Tripura-799210, India
+[Subhadeep Chakraborty](https://scholar.google.co.in/citations?user=o5n-rDUAAAAJ&hl=en) | Indian Institute of Science Education and Research Kolkata, Nadia-741246, India
 [Amarendra Kumar Sarma](https://www.iitg.ac.in/aksarma/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
 
 ## About the Work
 
-We investigate the phenomenon of quantum synchronization of mechanical oscillators in two optomechanical cavities coupled optically through two configurations.
-
-* ***Bidirectional configuration:*** The cavities exchange photons in a reversible manner and synchronization traces the classic Arnold tongue.
-* ***Unidirectional configuration:*** The cavities are arranged in a forward-fed manner and synchronization exhibits a novel blockade-like phenomenon associated with in-phase and anti-phase transitions.
-
-We further investigate the stability of the collective modes of the two mechanical oscillators to understand the synchronization phase transitions.
+We explore the phenomenon of quantum phase synchronization in two optomechanical oscillators, coupled either bidirectionally or unidirectionally to each other.
+We first show that irrespective of the configuration of the optomechanical oscillators, synchronization can be achieved, with a finite degree of quantum correlation.
+However, while looking at the variation of the synchronization against the frequency detuning of the two oscillators, we observe a profound effect of the directionality of the optical coupling.
+For instance, we find that when the two optomechanical cavities exchange photons bidirectionally, synchronization traces the classic Arnold tongue.
+Whereas, for the unidirectional configuration, synchronization exhibits a novel blockade-like behavior where finite detuning favors synchronization.
+We also observe a strong connection between synchronization blockade and
+synchronization phase transition.
 
 ## Structure of the Repository
 
 ```
 ROOT_DIR/
 |
+├───data/
+│   ├───foo-bar/
+│   │   ├───baz_xyz.npz
+│   │   └───...
+│   └───...
+|
 ├───notebooks/
-│   ├───foo_bar.ipynb
+│   ├───foo/
+│   │   ├───baz.ipynb
+│   │   └───...
 │   └───...
 |
 │───scripts/
-│   ├───foo_bar.py
+│   ├───foo-bar/
+│   │   ├───baz_xyz.py
+│   │   └───...
 │   └───...
 |
 ├───systems/
 │   ├───__init__.py
-│   ├───FooBar.py
-│   └───...
-|
-│───utils/
-│   ├───__init__.py
-│   ├───foo_bar.py
+│   ├───Foo.py
 │   └───...
 │
 ├───.gitignore
 ├───CHANGELOG.md
-├───GUI.py
 └───README.md
 ```
 
@@ -58,13 +66,13 @@ conda create -n qom python=3
 conda activate qom
 ```
 
-This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) which can be installed from the Python Package Index via `pip` using:
+This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) wich can be installed via Python Package Index using `pip` by executing:
 
 ```bash
 pip install -i https://test.pypi.org/simple/ qom
 ```
 
-Alternatively, [clone](https://github.com/Sampreet/qom) or [download](https://github.com/Sampreet/qom/archive/refs/heads/master.zip) as `.zip` and extract the contents.
+Alternatively, [clone the repository](https://github.com/Sampreet/qom) or [download the sources](https://github.com/Sampreet/qom/archive/refs/heads/master.zip) as `.zip` and extract the contents.
 Now, execute the following from *outside* the top-level directory, `ROOT_DIR`, inside which `setup.py` is located:
 
 ```bash
@@ -76,15 +84,7 @@ pip install -e ROOT_DIR
 To run the scripts, navigate *inside* the top-level directory, `ROOT_DIR`, and execute:
 
 ```bash
-python scripts/foo_bar.py
+python scripts/foo-bar/baz_xyz.py
 ```
 
-Here, `foo_bar.py` is the name of the script.
-
-To run in GUI mode using `PowerShell` or `bash`, navigate to `ROOT_DIR` and execute:
-
-```bash
-python -c 'from qom.ui.gui import run; run()'
-```
-
-Alternatively, run `GUI.py` from within the directory.
+Here, `foo-bar` is the name of the folder and  `baz.py` is the name of the file.
