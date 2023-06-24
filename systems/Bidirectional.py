@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
  
-"""Class to simulate two simple optically-coupled QOM systems."""
+"""Class to simulate bidirectionally-coupled QOM systems."""
 
 __authors__ = ['Sampreet Kalita']
 __version__ = 'qom-v1.0.0'
 __created__ = '2020-06-03'
-__updated__ = '2023-06-02'
+__updated__ = '2023-06-21'
 
 # dependencies
 import numpy as np
@@ -15,7 +15,7 @@ import numpy as np
 from qom.systems import BaseSystem
 
 class Bi_00(BaseSystem):
-    """Class to simulate two simple optically-coupled QOM systems.
+    """Class to simulate two simple bidirectionally-coupled QOM systems.
 
     Parameters
     ----------
@@ -41,13 +41,13 @@ class Bi_00(BaseSystem):
         # initialize super class
         super().__init__(
             params=params,
-            code='bi_00',
-            name='Two Simple Optically-coupled QOM Systems',
+            name='Bi_00',
+            desc='Two Simple Bidirectionally-coupled QOM Systems',
             num_modes=4,
             cb_update=cb_update
         )
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, c, t):
         """Method to obtain the drift matrix.
 
         Parameters
@@ -97,7 +97,7 @@ class Bi_00(BaseSystem):
 
         return self.A
     
-    def get_D(self, modes, corrs, params, t):
+    def get_D(self, modes, corrs, c, t):
         """Method to obtain the noise matrix.
         
         Parameters
@@ -154,7 +154,7 @@ class Bi_00(BaseSystem):
 
         return iv_modes, iv_corrs, np.empty(0)
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, c, t):
         """Method to obtain the rates of the classical modes.
 
         Parameters

@@ -4,9 +4,9 @@ import os
 import sys
 
 # qom modules
-from qom.solvers import HLESolver, QCMSolver
 from qom.ui.plotters import MPLPlotter
 from qom.utils.looper import run_loopers_in_parallel, wrap_looper
+from qom.utils.solver import get_func_quantum_correlation_measures
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
@@ -50,8 +50,6 @@ params = {
     },
     'plotter': {
         'type'                  : 'lines',
-        'palette'               : 'RdBu_r',
-        'bins'                  : 21,
         'x_label'               : '$\\delta / \\omega_{mL}$',
         'x_tick_position'       : 'both-out',
         'x_ticks'               : [i * 0.002 for i in range(6)],
@@ -73,48 +71,40 @@ params = {
             {
                 'xmin'  : 0.0,
                 'xmax'  : 0.0023,
-                'color' : 10,
+                'color' : 5,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0023,
                 'xmax'  : 0.0033,
-                'color' : 4,
+                'color' : 2,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0033,
                 'xmax'  : 0.0039,
-                'color' : 10,
+                'color' : 5,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0039,
                 'xmax'  : 0.01,
-                'color' : 7,
+                'color' : 4,
                 'alpha' : 0.5
             }
         ]
     }
 }
 
+# function to obtain quantum phase synchronization and pearson correlation coefficient
 def func(system_params):
-    # update system parameters
-    system = Uni_00(
-        params=system_params
-    )
-    # get modes and correlations
-    Modes, Corrs, _ = HLESolver(
-        system=system,
-        params=params['solver']
-    ).get_modes_corrs_dynamics()
-    # get measures
-    Measures = QCMSolver(
-        Modes=Modes,
-        Corrs=Corrs,
-        params=params['solver']
-    ).get_measures()
-    # return results
+    # get quantum correlation measures
+    Measures = get_func_quantum_correlation_measures(
+        SystemClass=Uni_00,
+        params=params['solver'],
+        steady_state=False
+    )(system_params)
+    # return average value
     return np.mean(Measures, axis=0)
 
 if __name__ == '__main__':
@@ -124,18 +114,25 @@ if __name__ == '__main__':
         func=func,
         params=params['looper'],
         params_system=params['system'],
-        plot=False,
-        params_plotter=params['plotter']
+        plot=False
     )
+
+    # extract values
     xs = looper.axes['X']['val']
     vs = looper.results['V'].transpose()
 
     # plotter
-    plotter = MPLPlotter(axes={
-        'X' : xs,
-        'Y' : ['sync_p', 'corr_P']
-    }, params=params['plotter'])
-    plotter.update(xs=xs, vs=[vs[1], [0] * len(vs[1])])
+    plotter = MPLPlotter(
+        axes={
+            'X' : xs,
+            'Y' : ['sync_p', 'corr_P']
+        },
+        params=params['plotter']
+    )
+    plotter.update(
+        xs=xs,
+        vs=[vs[1], [0] * len(vs[1])]
+    )
     plotter.add_scatter(
         xs=xs,
         vs=vs[1],
@@ -143,5 +140,10 @@ if __name__ == '__main__':
         color=params['plotter']['y_colors'][0],
         marker='o'
     )
-    plotter.update_twin_axis(xs=xs, vs=vs[0])
-    plotter.show(True)
+    plotter.update_twin_axis(
+        xs=xs,
+        vs=vs[0]
+    )
+    plotter.show(
+        hold=True
+    )

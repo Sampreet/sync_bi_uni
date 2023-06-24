@@ -4,8 +4,8 @@ import os
 import sys
 
 # qom modules
-from qom.solvers import HLESolver, QCMSolver
 from qom.utils.looper import run_loopers_in_parallel, wrap_looper
+from qom.utils.solver import get_func_quantum_correlation_measures
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
@@ -65,31 +65,26 @@ params = {
         'y_ticks'           : [0.0, 0.0375, 0.075],
         'y_ticks_minor'     : [i * 0.0075 for i in range(11)],
         'show_cbar'         : True,
+        'cbar_title'        : '$\\langle S_{p} \\rangle$',
         'cbar_ticks'        : [0.0, 0.1, 0.2],
-        'width'             : 6.5,
+        'cbar_ticks_minor'  : [i * 0.025 for i in range(9)],
+        'width'             : 6.0,
         'height'            : 5.0
     }
 }
 
-def func(params_system):
-    # update system parameters
-    system = Bi_00(
-        params=params_system
-    )
-    # get modes and correlations
-    Modes, Corrs, _ = HLESolver(
-        system=system,
-        params=params['solver']
-    ).get_modes_corrs_dynamics()
-    # get measures
-    Measures = QCMSolver(
-        Modes=Modes,
-        Corrs=Corrs,
-        params=params['solver']
-    ).get_measures()
-    # return value
+# function to obtain quantum phase synchronization
+def func(system_params):
+    # get quantum correlation measures
+    Measures = get_func_quantum_correlation_measures(
+        SystemClass=Bi_00,
+        params=params['solver'],
+        steady_state=False
+    )(system_params)
+    # return average value
     return np.mean(Measures.transpose()[0])
 
+# loop and plot
 if __name__ == '__main__':
     looper = run_loopers_in_parallel(
         looper_name='XYLooper',

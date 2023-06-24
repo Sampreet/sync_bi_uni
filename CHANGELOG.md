@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023/06/24 - 00 - Added Notebook for Plots
+> Toolbox version 1.0.0
+* Added `v3.0_qom-v1.0.0/plots` notebook.
+* Minor updates to all scripts and systems.
+* Updated and `README`.
+
 ## 2023/06/20 - 00 - Version Upgrade
 > Toolbox version 1.0.0
 * Revamped all contents for `qom-v1.0.0`.

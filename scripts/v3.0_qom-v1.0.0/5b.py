@@ -4,9 +4,9 @@ import os
 import sys
 
 # qom modules
-from qom.solvers import HLESolver, QCMSolver
 from qom.ui.plotters import MPLPlotter
 from qom.utils.looper import run_loopers_in_parallel, wrap_looper
+from qom.utils.solver import get_func_quantum_correlation_measures, get_func_system_measure
 
 # add path to local libraries
 sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
@@ -51,16 +51,14 @@ params = {
     },
     'plotter': {
         'type'                  : 'lines',
-        'palette'               : 'RdBu_r',
-        'bins'                  : 21,
         'x_label'               : '$\\delta / \\omega_{mL}$',
         'x_tick_position'       : 'both-out',
         'x_ticks'               : [i * 0.002 for i in range(6)],
         'x_ticks_minor'         : [i * 0.0004 for i in range(26)],
-        'y_colors'              : [-3, 'k', 'k'],
+        'y_colors'              : [-1, 'k', 'k'],
         'y_styles'              : ['-', ':', '--'],
         'v_label'               : '$10^{3} \\times TLE$',
-        'v_label_color'         : -3,
+        'v_label_color'         : -1,
         'v_limits'              : [-0.0015, 0.0005],
         'v_tick_labels'         : [-1, 0],
         'v_tick_position'       : 'both-out',
@@ -76,69 +74,51 @@ params = {
             {
                 'xmin'  : 0.0,
                 'xmax'  : 0.0023,
-                'color' : 10,
+                'color' : 5,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0023,
                 'xmax'  : 0.0033,
-                'color' : -5,
+                'color' : -2,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0033,
                 'xmax'  : 0.0039,
-                'color' : 10,
+                'color' : 5,
                 'alpha' : 0.5
             },
             {
                 'xmin'  : 0.0039,
                 'xmax'  : 0.01,
-                'color' : -8,
+                'color' : -4,
                 'alpha' : 0.5
             }
         ]
     }
 }
 
+# function to obtain quantum phase synchronization and largest transverse Lyapunov exponent
 def func(system_params):
-    # update system parameters
-    system = Uni_00(
-        params=system_params
-    )
-    # get modes and correlations
-    Modes, Corrs, _ = HLESolver(
-        system=system,
-        params=params['solver']
-    ).get_modes_corrs_dynamics()
-    # get measures
-    Measures = QCMSolver(
-        Modes=Modes,
-        Corrs=Corrs,
-        params=params['solver']
-    ).get_measures()
+    # get quantum correlation measures
+    S_ps = get_func_quantum_correlation_measures(
+        SystemClass=Uni_00,
+        params=params['solver'],
+        steady_state=False
+    )(system_params)
     # return results
-    m_00 = np.mean(Measures, axis=0)[0]
+    m_00 = np.mean(S_ps, axis=0)[0]
 
-    # update system parameters
-    system = Uni_01(
-        params=system_params
-    )
-    # get modes and correlations
-    Modes, _, T = HLESolver(
-        system=system,
-        params=params['solver']
-    ).get_modes_corrs_dynamics()
-    _, _, c = system.get_ivc()
-    # get averaged drift matrix
-    A   = system.get_A(
-        modes=np.mean(Modes, axis=0),
-        params=c,
-        t=T[0]
-    )
+    # get system measure
+    As = get_func_system_measure(
+        SystemClass=Uni_01,
+        params=params['solver'],
+        steady_state=False
+    )(system_params)
     # get eigenvalues of the minus mode
-    eigs, _ = np.linalg.eig(A)
-    m_01 = np.max(np.real(eigs[6:8]))
+    eigs, _ = np.linalg.eig(np.mean(As, axis=0))
+    m_01    = np.max(np.real(eigs[6:8]))
 
     return np.array([m_00, m_01])
 
@@ -149,18 +129,22 @@ if __name__ == '__main__':
         func=func,
         params=params['looper'],
         params_system=params['system'],
-        plot=False,
-        params_plotter=params['plotter']
+        plot=False
     )
+
+    # extract values
     xs = looper.axes['X']['val']
     vs = looper.results['V'].transpose()
 
     # plotter
-    plotter = MPLPlotter(axes={
-        'X' : xs,
-        'Y' : ['sync_p', 'avg_eig']
-    }, params=params['plotter'])
-    plotter.update(xs=xs, vs=[vs[1], [0] * len(vs[1])])
+    plotter = MPLPlotter(
+        axes={},
+        params=params['plotter']
+    )
+    plotter.update(
+        xs=xs,
+        vs=[vs[1], [0] * len(vs[1])]
+    )
     plotter.add_scatter(
         xs=xs,
         vs=vs[1],
@@ -168,5 +152,10 @@ if __name__ == '__main__':
         color=params['plotter']['y_colors'][0],
         marker='o'
     )
-    plotter.update_twin_axis(xs=xs, vs=vs[0])
-    plotter.show(True)
+    plotter.update_twin_axis(
+        xs=xs,
+        vs=vs[0]
+    )
+    plotter.show(
+        hold=True
+    )

@@ -6,7 +6,7 @@
 __authors__ = ['Sampreet Kalita']
 __version__ = 'qom-v1.0.0'
 __created__ = '2020-01-04'
-__updated__ = '2023-06-20'
+__updated__ = '2023-06-21'
 
 # dependencies
 import numpy as np
@@ -43,13 +43,13 @@ class Uni_00(BaseSystem):
         # initialize super class
         super().__init__(
             params=params,
-            code='uni_00',
-            name='Two Simple Unidirectionally-coupled QOM Systems',
+            name='Uni_00',
+            desc='Two Simple Unidirectionally-coupled QOM Systems',
             num_modes=4,
             cb_update=cb_update
         )
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, c, t):
         """Method to obtain the drift matrix.
 
         Parameters
@@ -100,7 +100,7 @@ class Uni_00(BaseSystem):
 
         return self.A
     
-    def get_D(self, modes, corrs, params, t):
+    def get_D(self, modes, corrs, c, t):
         """Method to obtain the noise matrix.
         
         Parameters
@@ -164,7 +164,7 @@ class Uni_00(BaseSystem):
 
         return iv_modes, iv_corrs, np.empty(0)
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, c, t):
         """Method to obtain the rates of the classical modes.
 
         Parameters
@@ -236,13 +236,13 @@ class Uni_01(BaseSystem):
         # initialize super class
         super().__init__(
             params=params,
-            code='uni_01',
-            name='Two Simple Unidirectionally-coupled QOM Systems with Plus-Minus modes',
+            name='Uni_01',
+            desc='Two Simple Unidirectionally-coupled QOM Systems with Plus-Minus modes',
             num_modes=4,
             cb_update=cb_update
         )
 
-    def get_A(self, modes, params, t):
+    def get_A(self, modes, c, t):
         """Method to obtain the drift matrix.
 
         Parameters
@@ -305,7 +305,7 @@ class Uni_01(BaseSystem):
 
         return self.A
     
-    def get_D(self, modes, corrs, params, t):
+    def get_D(self, modes, corrs, c, t):
         """Method to obtain the noise matrix.
         
         Parameters
@@ -381,7 +381,7 @@ class Uni_01(BaseSystem):
 
         return iv_modes, iv_corrs, np.empty(0)
 
-    def get_mode_rates(self, modes, params, t):
+    def get_mode_rates(self, modes, c, t):
         """Method to obtain the rates of the classical modes.
 
         Parameters

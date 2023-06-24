@@ -1,7 +1,7 @@
 # Switching of Quantum Synchronization in Coupled Optomechanical Oscillators
 
 [![Version](https://img.shields.io/badge/version-3.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
-[![Version](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
+[![Version](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://sampreet.github.io/qom-docs)
 
 Author | Affiliation
 ------------ | -------------
@@ -18,6 +18,12 @@ For instance, we find that when the two optomechanical cavities exchange photons
 Whereas, for the unidirectional configuration, synchronization exhibits a novel blockade-like behavior where finite detuning favors synchronization.
 We also observe a strong connection between synchronization blockade and
 synchronization phase transition.
+
+## Notebooks
+
+* [Adiabatic Elimination in the Bidirectional Configuration](notebooks/bidirectional_adiabatic_elimination.ipynb)
+* [Adiabatic Elimination in the Unidirectional Configuration](notebooks/unidirectional_adiabatic_elimination.ipynb)
+* [Plots in the Manuscript](notebooks\v3.0_qom-v1.0.0\plots.ipynb)
 
 ## Structure of the Repository
 
@@ -87,4 +93,4 @@ To run the scripts, navigate *inside* the top-level directory, `ROOT_DIR`, and e
 python scripts/foo-bar/baz_xyz.py
 ```
 
-Here, `foo-bar` is the name of the folder and  `baz.py` is the name of the file.
+Here, `foo-bar` is the name of the folder inside `scripts` and `baz_xyz.py` is the name of the file.

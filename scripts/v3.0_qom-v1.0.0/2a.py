@@ -37,19 +37,25 @@ params = {
         'omega_mL'      : 1.0
     },
     'plotter': {
-        'type'              : 'lines',
-        'palette'           : 'RdBu',
-        'bins'              : 11,
-        'x_label'           : '$\\omega_{mL} t$',
-        'x_tick_position'   : 'both-out',
-        'x_ticks'           : [0, 200, 400, 600],
-        'x_ticks_minor'     : [i * 40 for i in range(16)],
-        'v_label'           : '$S_{p}, 5 \\times D_{G}$',
-        'v_tick_position'   : 'both-out',
-        'v_ticks'           : [0, 0.1, 0.2],
-        'v_ticks_minor'     : [i * 0.02 for i in range(11)],
-        'width'             : 8.0,
-        'height'            : 4.0
+        'type'                  : 'lines',
+        'x_label'               : '$\\omega_{mL} t$',
+        'x_tick_position'       : 'both-out',
+        'x_ticks'               : [0, 200, 400, 600],
+        'x_ticks_minor'         : [i * 40 for i in range(16)],
+        'y_colors'              : [0, 0, -1, -1],
+        'y_styles'              : ['-', '--'] * 2,
+        'v_label'               : '$S_{p}$',
+        'v_label_color'         : 0,
+        'v_tick_position'       : 'both-out',
+        'v_ticks'               : [0, 0.1, 0.2],
+        'v_ticks_minor'         : [i * 0.02 for i in range(11)],
+        'v_twin_label'          : '$5 \\times D_{G}$',
+        'v_twin_label_color'    : -1,
+        'v_twin_tick_position'  : 'both-out',
+        'v_twin_ticks'          : [0, 0.1, 0.2],
+        'v_twin_ticks_minor'    : [i * 0.02 for i in range(11)],
+        'width'                 : 8.0,
+        'height'                : 4.0
     }
 }
 
@@ -65,7 +71,7 @@ system = Bi_00(
 Modes, Corrs, T = HLESolver(
     system=system,
     params=params['solver']
-).get_modes_corrs_dynamics()
+).get_modes_corrs_times()
 # get measures
 Measures = QCMSolver(
     Modes=Modes,
@@ -80,14 +86,18 @@ M_1 = Measures.transpose()[1] * 5
 M_1_avg = np.mean(M_1[9371:])
 
 # plotter
-plotter = MPLPlotter(axes={
-    'X': T,
-    'Y': ['$S_{p}$', '$5 \\times D_{G}$']
-}, params=params['plotter'])
-_colors = plotter.get_colors(palette=params['plotter']['palette'], bins=params['plotter']['bins'])
-axis = plotter.get_current_axis()
-axis.plot([M_0_avg for i in range(len(T))], linestyle='--', color=_colors[-2])
-axis.plot([M_1_avg for i in range(len(T))], linestyle='--', color=_colors[1])
-axis.plot(T, M_0, color=_colors[-2])
-axis.plot(T, M_1, color=_colors[1])
-plotter.show(hold=True)
+plotter = MPLPlotter(
+    axes={},
+    params=params['plotter']
+)
+plotter.update(
+    xs=T,
+    vs=[M_0, [M_0_avg] * len(T)]
+)
+plotter.update_twin_axis(
+    xs=T,
+    vs=[M_1, [M_1_avg] * len(T)]
+)
+plotter.show(
+    hold=True
+)
