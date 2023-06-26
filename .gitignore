@@ -1,7 +1,7 @@
 # Visual Studio files
 .vscode/
 
-# extra folders
+# extra files
 cache*/
 temp*/
 

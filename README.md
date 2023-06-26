@@ -23,7 +23,7 @@ synchronization phase transition.
 
 * [Adiabatic Elimination in the Bidirectional Configuration](notebooks/bidirectional_adiabatic_elimination.ipynb)
 * [Adiabatic Elimination in the Unidirectional Configuration](notebooks/unidirectional_adiabatic_elimination.ipynb)
-* [Plots in the Manuscript](notebooks\v3.0_qom-v1.0.0\plots.ipynb)
+* [Plots in the Manuscript](notebooks/v3.0_qom-v1.0.0/plots.ipynb)
 
 ## Structure of the Repository
 
@@ -72,7 +72,7 @@ conda create -n qom python=3
 conda activate qom
 ```
 
-This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) wich can be installed via Python Package Index using `pip` by executing:
+This project uses [The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) which can be installed via Python Package Index using `pip` by executing:
 
 ```bash
 pip install -i https://test.pypi.org/simple/ qom
@@ -87,7 +87,9 @@ pip install -e ROOT_DIR
 
 ### Running the Scripts
 
-To run the scripts, navigate *inside* the top-level directory, `ROOT_DIR`, and execute:
+Download (or clone) [this repository](https://github.com/sampreet/sync_bi_uni) and rename the extracted (or cloned) directory to `sync_bi_uni`.
+
+To run the scripts, navigate *inside* the top-level directory, `sync_bi_uni`, and execute:
 
 ```bash
 python scripts/foo-bar/baz_xyz.py

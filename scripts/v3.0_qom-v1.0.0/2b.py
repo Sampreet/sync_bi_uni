@@ -69,12 +69,12 @@ system = Uni_00(
     params=params['system']
 )
 
-# get modes and correlations
+# get modes, correlations and times
 Modes, Corrs, T = HLESolver(
     system=system,
     params=params['solver']
 ).get_modes_corrs_times()
-# get measures
+# get quantum correlation measures
 Measures = QCMSolver(
     Modes=Modes,
     Corrs=Corrs,

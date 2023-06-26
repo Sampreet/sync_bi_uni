@@ -6,7 +6,7 @@
 __authors__ = ['Sampreet Kalita']
 __version__ = 'qom-v1.0.0'
 __created__ = '2020-01-04'
-__updated__ = '2023-06-21'
+__updated__ = '2023-06-24'
 
 # dependencies
 import numpy as np
@@ -59,7 +59,7 @@ class Uni_00(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
@@ -112,7 +112,7 @@ class Uni_00(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
@@ -174,7 +174,7 @@ class Uni_00(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
@@ -252,7 +252,7 @@ class Uni_01(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
@@ -317,7 +317,7 @@ class Uni_01(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
@@ -391,7 +391,7 @@ class Uni_01(BaseSystem):
         c : numpy.ndarray, optional
             Derived constants and controls.
         t : float, optional
-            Time at which the drift matrix is calculated.
+            Time at which the values are calculated.
         
         Returns
         -------
