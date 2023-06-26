@@ -9,7 +9,7 @@ from qom.utils.looper import run_loopers_in_parallel, wrap_looper
 from qom.utils.solver import get_func_quantum_correlation_measures
 
 # add path to local libraries
-sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
+sys.path.append(os.path.abspath(os.path.join('.')))
 # import system
 from systems.Unidirectional import Uni_00
 

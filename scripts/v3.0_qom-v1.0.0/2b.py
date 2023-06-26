@@ -9,7 +9,7 @@ from qom.ui import init_log
 from qom.ui.plotters import MPLPlotter
 
 # add path to local libraries
-sys.path.append(os.path.abspath(os.path.join('..', 'sync_bi_uni')))
+sys.path.append(os.path.abspath(os.path.join('.')))
 # import system
 from systems.Unidirectional import Uni_00
 

@@ -1,7 +1,9 @@
 # Switching of Quantum Synchronization in Coupled Optomechanical Oscillators
 
 [![Version](https://img.shields.io/badge/version-3.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
-[![Version](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://sampreet.github.io/qom-docs)
+[![Toolbox](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://sampreet.github.io/qom-docs)
+
+> A collection of all data and scripts for the work.
 
 Author | Affiliation
 ------------ | -------------
@@ -31,20 +33,22 @@ synchronization phase transition.
 ROOT_DIR/
 |
 ├───data/
-│   ├───foo-bar/
+│   ├───bar/
 │   │   ├───baz_xyz.npz
 │   │   └───...
 │   └───...
 |
 ├───notebooks/
-│   ├───foo/
+│   ├───bar/
 │   │   ├───baz.ipynb
 │   │   └───...
+│   │
+│   ├───foo_baz.ipynb
 │   └───...
 |
 │───scripts/
-│   ├───foo-bar/
-│   │   ├───baz_xyz.py
+│   ├───bar/
+│   │   ├───baz.py
 │   │   └───...
 │   └───...
 |
@@ -57,6 +61,8 @@ ROOT_DIR/
 ├───CHANGELOG.md
 └───README.md
 ```
+
+Here, `foo` represents the module or system and `bar` represents the version.
 
 ## Execution
 
@@ -87,12 +93,10 @@ pip install -e ROOT_DIR
 
 ### Running the Scripts
 
-Download (or clone) [this repository](https://github.com/sampreet/sync_bi_uni) and rename the extracted (or cloned) directory to `sync_bi_uni`.
-
-To run the scripts, navigate *inside* the top-level directory, `sync_bi_uni`, and execute:
+To run the scripts, navigate *inside* the top-level directory, `ROOT_DIR`, and execute:
 
 ```bash
-python scripts/foo-bar/baz_xyz.py
+python scripts/bar/baz.py
 ```
 
-Here, `foo-bar` is the name of the folder inside `scripts` and `baz_xyz.py` is the name of the file.
+Here, `bar` is the name of the folder inside `scripts` and `baz.py` is the name of the script (refer to the repository structure).

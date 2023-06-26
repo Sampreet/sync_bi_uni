@@ -4,9 +4,9 @@
 """Class to simulate unidirectionally-coupled QOM systems."""
 
 __authors__ = ['Sampreet Kalita']
-__version__ = 'qom-v1.0.0'
+__toolbox__ = 'qom-v1.0.0'
 __created__ = '2020-01-04'
-__updated__ = '2023-06-24'
+__updated__ = '2023-06-26'
 
 # dependencies
 import numpy as np
