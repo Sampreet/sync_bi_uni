@@ -6,7 +6,7 @@
 __authors__ = ['Sampreet Kalita']
 __toolbox__ = 'qom-v1.0.0'
 __created__ = '2020-06-03'
-__updated__ = '2023-06-26'
+__updated__ = '2023-07-07'
 
 # dependencies
 import numpy as np
@@ -21,18 +21,20 @@ class Bi_00(BaseSystem):
     ----------
     params : dict
         Parameters for the system.
+    cb_update : callable, optional
+        Callback function to update status and progress, formatted as `cb_update(status, progress, reset)`, where `status` is a string, `progress` is a float and `reset` is a boolean.
     """
 
     system_defaults = {
-        'A_l'           : 52.0,
-        'Delta_0_sign'  : 1.0,
-        'delta'         : 0.01,
-        'g_0s'          : [0.005, 0.005],
-        'gammas'        : [0.005, 0.005],
-        'kappas'        : [0.15, 0.15],
-        'lamb'          : 0.075,
-        'n_ths'         : [0.0, 0.0],
-        'omega_mL'      : 1.0
+        'A_l': 52.0,
+        'Delta_0_sign': 1.0,
+        'delta': 0.01,
+        'g_0s': [0.005, 0.005],
+        'gammas': [0.005, 0.005],
+        'kappas': [0.15, 0.15],
+        'lambda': 0.075,
+        'n_ths': [0.0, 0.0],
+        'omega_mL': 1.0
     }
 
     def __init__(self, params={}, cb_update=None):
@@ -54,9 +56,9 @@ class Bi_00(BaseSystem):
         ----------
         modes : numpy.ndarray
             Classical modes.
-        c : numpy.ndarray, optional
+        c : numpy.ndarray
             Derived constants and controls.
-        t : float, optional
+        t : float
             Time at which the values are calculated.
         
         Returns
@@ -66,13 +68,13 @@ class Bi_00(BaseSystem):
         """
         
         # extract frequently used variables
-        alphas  = [modes[2 * j] for j in range(2)]
-        betas   = [modes[2 * j + 1] for j in range(2)]
+        alphas = modes[::2]
+        betas = modes[1::2]
 
         # effective values
         omega_ms= [self.params['omega_mL'], self.params['omega_mL'] + self.params['delta']]
-        Deltas  = [self.params['Delta_0_sign'] * omega_ms[i] + 2.0 * self.params['g_0s'][i] * np.real(betas[i]) for i in range(2)]
-        gs      = [self.params['g_0s'][i] * alphas[i] for i in range(2)]
+        Deltas = [self.params['Delta_0_sign'] * omega_ms[i] + 2.0 * self.params['g_0s'][i] * np.real(betas[i]) for i in range(2)]
+        gs = [self.params['g_0s'][i] * alphas[i] for i in range(2)]
 
         # update drift matrix
         for i in range(2):
@@ -80,12 +82,12 @@ class Bi_00(BaseSystem):
             self.A[4*i + 0][4*i + 0] = - self.params['kappas'][i]
             self.A[4*i + 0][4*i + 1] = - Deltas[i]
             self.A[4*i + 0][4*i + 2] = - 2.0 * np.imag(gs[i])
-            self.A[4*i + 0][4*(1 - i) + 1] = - self.params['lamb']
+            self.A[4*i + 0][4*(1 - i) + 1] = - self.params['lambda']
             # Y quadratures
             self.A[4*i + 1][4*i + 0] = Deltas[i]
             self.A[4*i + 1][4*i + 1] = - self.params['kappas'][i]
             self.A[4*i + 1][4*i + 2] = 2.0 * np.real(gs[i])
-            self.A[4*i + 1][4*(1 - i) + 0] = self.params['lamb']
+            self.A[4*i + 1][4*(1 - i) + 0] = self.params['lambda']
             # Q quadratures
             self.A[4*i + 2][4*i + 2] = - self.params['gammas'][i]
             self.A[4*i + 2][4*i + 3] = omega_ms[i]
@@ -106,9 +108,9 @@ class Bi_00(BaseSystem):
             Classical modes.
         corrs : numpy.ndarray
             Quantum correlations.
-        c : numpy.ndarray, optional
+        c : numpy.ndarray
             Derived constants and controls.
-        t : float, optional
+        t : float
             Time at which the values are calculated.
         
         Returns
@@ -141,10 +143,10 @@ class Bi_00(BaseSystem):
             Derived constants and controls.
         """
  
-        # initial mode amplitudes
+        # initial values of the modes
         iv_modes = np.zeros(self.num_modes, dtype=np.complex_)
 
-        # initial quadrature correlations
+        # initial values of the correlations
         iv_corrs = np.zeros(self.dim_corrs, dtype=np.float_)
         for i in range(2):
             iv_corrs[4*i + 0][4*i + 0] = 0.5
@@ -155,37 +157,38 @@ class Bi_00(BaseSystem):
         return iv_modes, iv_corrs, np.empty(0)
 
     def get_mode_rates(self, modes, c, t):
-        """Method to obtain the rates of the classical modes.
+        """Method to obtain the rates of change of the modes.
 
         Parameters
         ----------
         modes : numpy.ndarray
             Classical modes.
-        c : numpy.ndarray, optional
+        c : numpy.ndarray
             Derived constants and controls.
-        t : float, optional
+        t : float
             Time at which the values are calculated.
         
         Returns
         -------
         mode_rates : numpy.ndarray
-            Normalized rates for each mode.
+            Rates of change of the modes.
         """
         
         # extract frequently used variables
-        alphas  = [modes[2 * j] for j in range(2)]
-        betas   = [modes[2 * j + 1] for j in range(2)]
+        alphas = modes[::2]
+        betas = modes[1::2]
 
         # effective values
-        omega_ms= [self.params['omega_mL'], self.params['omega_mL'] + self.params['delta']]
-        Deltas  = [self.params['Delta_0_sign'] * omega_ms[i] + 2.0 * self.params['g_0s'][i] * np.real(betas[i]) for i in range(2)]
-        gs      = [self.params['g_0s'][i] * alphas[i] for i in range(2)]
+        omega_ms = [
+            self.params['omega_mL'],
+            self.params['omega_mL'] + self.params['delta']
+        ]
+        Deltas = [self.params['Delta_0_sign'] * omega_ms[i] + 2.0 * self.params['g_0s'][i] * np.real(betas[i]) for i in range(2)]
+        gs = [self.params['g_0s'][i] * alphas[i] for i in range(2)]
 
-        # initialize lists
-        dalpha_dts  = [(- self.params['kappas'][i] + 1.0j * Deltas[i]) * alphas[i] + 1.0j * self.params['lamb'] * alphas[1 - i] + self.params['A_l'] for i in range(2)]
-        dbeta_dts   = [1.0j * gs[i] * np.conjugate(alphas[i]) + (- self.params['gammas'][i] - 1.0j * omega_ms[i]) * betas[i] for i in range(2)]
+        # optical modes
+        dalpha_dts = [(- self.params['kappas'][i] + 1.0j * Deltas[i]) * alphas[i] + 1.0j * self.params['lambda'] * alphas[1 - i] + self.params['A_l'] for i in range(2)]
+        # mechanical modes
+        dbeta_dts = [1.0j * gs[i] * np.conjugate(alphas[i]) + (- self.params['gammas'][i] - 1.0j * omega_ms[i]) * betas[i] for i in range(2)]
 
-        # rearrange per system and normalize by mechanical frequency
-        mode_rates = np.array([dalpha_dts[0], dbeta_dts[0], dalpha_dts[1], dbeta_dts[1]], dtype=np.complex_)
-
-        return mode_rates
+        return np.array([dalpha_dts[0], dbeta_dts[0], dalpha_dts[1], dbeta_dts[1]], dtype=np.complex_)

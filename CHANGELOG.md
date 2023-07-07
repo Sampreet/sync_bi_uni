@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023/07/07 - 00 - Minor Changes
+> Toolbox version 1.0.0
+* Minor changes to import modules.
+* Changed parameter `lamb` to `lambda` in `systems/Bidirectional/Bi_00` system.
+* Updated documentations.
+
 ## 2023/06/26 - 01 - Minor Fixes
 > Toolbox version 1.0.0
 * Minor updates to paths in notebooks and scripts.
