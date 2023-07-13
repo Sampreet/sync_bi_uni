@@ -3,10 +3,10 @@
  
 """Class to simulate unidirectionally-coupled QOM systems."""
 
-__authors__ = ['Sampreet Kalita']
+__authors__ = ["Sampreet Kalita"]
 __toolbox__ = 'qom-v1.0.0'
-__created__ = '2020-01-04'
-__updated__ = '2023-07-07'
+__created__ = "2020-01-04"
+__updated__ = "2023-07-13"
 
 # dependencies
 import numpy as np
@@ -22,7 +22,7 @@ class Uni_00(BaseSystem):
     params : dict
         Parameters for the system.
     cb_update : callable, optional
-        Callback function to update status and progress, formatted as `cb_update(status, progress, reset)`, where `status` is a string, `progress` is a float and `reset` is a boolean.
+        Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is a float and ``reset`` is a boolean.
     """
 
     system_defaults = {
@@ -211,7 +211,7 @@ class Uni_01(BaseSystem):
     params : dict
         Parameters for the system.
     cb_update : callable, optional
-        Callback function to update status and progress, formatted as `cb_update(status, progress, reset)`, where `status` is a string, `progress` is a float and `reset` is a boolean.
+        Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is a float and ``reset`` is a boolean.
     """
 
     system_defaults = {

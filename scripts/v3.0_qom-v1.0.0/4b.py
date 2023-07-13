@@ -66,9 +66,7 @@ params = {
         'show_cbar': True,
         'cbar_title': '$\\langle S_{p} \\rangle$',
         'cbar_ticks': [0.0, 0.1, 0.2],
-        'cbar_ticks_minor': [i * 0.025 for i in range(9)],
-        'width': 6.0,
-        'height': 5.0
+        'cbar_ticks_minor': [i * 0.025 for i in range(9)]
     }
 }
 

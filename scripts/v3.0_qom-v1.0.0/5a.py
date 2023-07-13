@@ -50,14 +50,15 @@ params = {
     },
     'plotter': {
         'type': 'lines',
+        'colors': [0, 'k', 'k'],
+        'styles': ['-', ':', '--'],
         'x_label': '$\\delta / \\omega_{mL}$',
         'x_tick_position': 'both-out',
         'x_ticks': [i * 0.002 for i in range(6)],
         'x_ticks_minor': [i * 0.0004 for i in range(26)],
-        'y_colors': [0, 'k', 'k'],
-        'y_styles': ['-', ':', '--'],
         'v_label': '$C$',
         'v_label_color': 0,
+        'v_tick_color': 0,
         'v_tick_position': 'both-out',
         'v_ticks': [-1, 0, 1],
         'v_ticks_minor': [i * 0.25 - 1.0 for i in range(9)],
@@ -67,28 +68,24 @@ params = {
         'v_twin_ticks_minor': [i * 0.02 for i in range(9)],
         'width': 8.0,
         'height': 4.0,
-        'vspan': [
+        'vertical_spans': [
             {
-                'xmin': 0.0,
-                'xmax': 0.0023,
+                'limits': (0.0, 0.0023),
                 'color' : 5,
                 'alpha' : 0.5
             },
             {
-                'xmin': 0.0023,
-                'xmax': 0.0033,
+                'limits': (0.0023, 0.0033),
                 'color' : 2,
                 'alpha' : 0.5
             },
             {
-                'xmin': 0.0033,
-                'xmax': 0.0039,
+                'limits': (0.0033, 0.0039),
                 'color' : 5,
                 'alpha' : 0.5
             },
             {
-                'xmin': 0.0039,
-                'xmax': 0.01,
+                'limits': (0.0039, 0.01),
                 'color' : 4,
                 'alpha' : 0.5
             }
@@ -119,14 +116,11 @@ if __name__ == '__main__':
 
     # extract values
     xs = looper.axes['X']['val']
-    vs = looper.results['V'].transpose()
+    vs = np.transpose(looper.results['V'])
 
     # plotter
     plotter = MPLPlotter(
-        axes={
-            'X' : xs,
-            'Y' : ['sync_p', 'corr_P']
-        },
+        axes={},
         params=params['plotter']
     )
     plotter.update(
@@ -136,7 +130,7 @@ if __name__ == '__main__':
     plotter.add_scatter(
         xs=xs,
         vs=vs[1],
-        color=params['plotter']['y_colors'][0],
+        color=params['plotter']['colors'][0],
         size=20,
         style='o'
     )

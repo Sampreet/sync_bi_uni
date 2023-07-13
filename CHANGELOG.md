@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/07/07 - 00 - Updated README
+> Toolbox version 1.0.0
+* Minor fixes to import modules.
+* Updated `README`.
+
 ## 2023/07/07 - 00 - Minor Changes
 > Toolbox version 1.0.0
 * Minor changes to import modules.
