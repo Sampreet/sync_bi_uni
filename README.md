@@ -68,7 +68,7 @@ Here, `foo` represents the module or system and `bar` represents the version.
 
 ### Installing Dependencies
 
-[The Quantum Optomechanics Toolbox](https://github.com/Sampreet/qom) requires `Python 3.8+` installed, preferably via the [Anaconda distribution](https://www.anaconda.com/download).
+[The Quantum Optomechanics Toolbox](https://github.com/sampreet/qom) requires `Python 3.8+` installed, preferably via the [Anaconda distribution](https://www.anaconda.com/download).
 Once `Anaconda` is set up, create and activate a new `conda` environment using:
 
 ```bash
@@ -85,7 +85,7 @@ conda install matplotlib numpy scipy sympy seaborn
 
 ***Note: To run the GUI modules, `pyqt` should be installed separately.***
 
-Once the dependencies are installed, download the [repository of the toolbox](https://github.com/Sampreet/qom) as `.zip` and extract the contents.
+Once the dependencies are installed, download the [repository of the toolbox](https://github.com/sampreet/qom) as `.zip` and extract the contents.
 Now, execute the following from *outside* the top-level directory, `ROOT_DIR`, inside which `setup.py` is located (refer to the file structure of the repository [here](https://github.com/sampreet/qom/blob/master/CONTRIBUTING.md)):
 
 ```bash

@@ -139,18 +139,18 @@ if __name__ == '__main__':
         params=params['plotter']
     )
     plotter.update(
-        xs=xs,
-        vs=[vs[1], [0] * len(vs[1])]
+        vs=[vs[1], [0] * len(vs[1])],
+        xs=xs
     )
     plotter.add_scatter(
-        xs=xs,
         vs=vs[1],
+        xs=xs,
         color=params['plotter']['colors'][0],
         size=20,
         style='o'
     )
     plotter.update_twin_axis(
-        xs=xs,
-        vs=vs[0]
+        vs=vs[0],
+        xs=xs
     )
     plotter.show()

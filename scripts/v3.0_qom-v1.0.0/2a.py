@@ -97,11 +97,11 @@ plotter = MPLPlotter(
     params=params['plotter']
 )
 plotter.update(
-    xs=T,
-    vs=[M_0, [M_0_avg] * len(T)]
+    vs=[M_0, [M_0_avg] * len(T)],
+    xs=T
 )
 plotter.update_twin_axis(
-    xs=T,
-    vs=[M_1, [M_1_avg] * len(T)]
+    vs=[M_1, [M_1_avg] * len(T)],
+    xs=T
 )
 plotter.show()
