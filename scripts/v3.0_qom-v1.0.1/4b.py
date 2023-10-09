@@ -16,7 +16,7 @@ from systems.Unidirectional import Uni_00
 params = {
     'looper': {
         'show_progress': True,
-        'file_path_prefix':'data/v3.0_qom-v1.0.0/4b',
+        'file_path_prefix':'data/v3.0_qom-v1.0.1/4b',
         'X': {
             'var': 'delta',
             'min': 0.00,
@@ -66,7 +66,7 @@ params = {
         'show_cbar': True,
         'cbar_title': '$\\langle S_{p} \\rangle$',
         'cbar_ticks': [0.0, 0.1, 0.2],
-        'cbar_ticks_minor': [i * 0.025 for i in range(9)]
+        'width': 5.5
     }
 }
 

@@ -1,9 +1,10 @@
 # Switching of Quantum Synchronization in Coupled Optomechanical Oscillators
 
-[![Manuscript Version](https://img.shields.io/badge/version-3.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
-[![Toolbox Version](https://img.shields.io/badge/qom-v1.0.0-red?style=for-the-badge)](https://sampreet.github.io/qom-docs)
+[![Manuscript Version](https://img.shields.io/badge/manuscript-v3.0-red?style=for-the-badge)](https://doi.org/10.1088/2399-6528/ac3204)
+[![Toolbox Version](https://img.shields.io/badge/qom-v1.0.1-red?style=for-the-badge)](https://sampreet.github.io/qom-docs/v1.0.1)
+[![Last Updated](https://img.shields.io/github/last-commit/sampreet/sync_bi_uni?style=for-the-badge)](https://github.com/sampreet/sync_bi_uni/blob/master/CHANGELOG.md)
 
-> A collection of all data and scripts for the work.
+> A collection of all data and scripts for J. Phys. Commun 5, 115006 (2021).
 
 Author | Affiliation
 ------------ | -------------
@@ -25,7 +26,7 @@ synchronization phase transition.
 
 * [Adiabatic Elimination in the Bidirectional Configuration](notebooks/bidirectional_adiabatic_elimination.ipynb)
 * [Adiabatic Elimination in the Unidirectional Configuration](notebooks/unidirectional_adiabatic_elimination.ipynb)
-* [Plots in the Manuscript](notebooks/v3.0_qom-v1.0.0/plots.ipynb)
+* [Plots in the Latest Version of the Manuscript](notebooks/v3.0_qom-v1.0.0/plots.ipynb)
 
 ## Structure of the Repository
 
@@ -64,42 +65,17 @@ ROOT_DIR/
 
 Here, `foo` represents the module or system and `bar` represents the version.
 
-## Execution
+## Installing Dependencies
 
-### Installing Dependencies
+All numerical data and plots are obtained using the [Quantum Optomechanics Toolbox](https://github.com/sampreet/qom), an open-source Python framework to simulate optomechanical systems.
+Refer to the [QOM toolbox documentation](https://sampreet.github.io/qom-docs/v1.0.1) for the steps to install this libary.
 
-[The Quantum Optomechanics Toolbox](https://github.com/sampreet/qom) requires `Python 3.8+` installed, preferably via the [Anaconda distribution](https://www.anaconda.com/download).
-Once `Anaconda` is set up, create and activate a new `conda` environment using:
+## Running the Scripts
 
-```bash
-conda create -n qom python
-conda activate qom
-```
-
-The toolbox relies primarily on `numpy` (for fast numerical algebra), `scipy` (for numerical methods), `sympy` (for symbolic algebra), `seaborn` (for color palettes) and `matplotlib` (for plotting results).
-These libraries can be installed using:
-
-```bash
-conda install matplotlib numpy scipy sympy seaborn
-```
-
-***Note: To run the GUI modules, `pyqt` should be installed separately.***
-
-Once the dependencies are installed, download the [repository of the toolbox](https://github.com/sampreet/qom) as `.zip` and extract the contents.
-Now, execute the following from *outside* the top-level directory, `ROOT_DIR`, inside which `setup.py` is located (refer to the file structure of the repository [here](https://github.com/sampreet/qom/blob/master/CONTRIBUTING.md)):
-
-```bash
-pip install -e ROOT_DIR
-```
-
-The corresponding documentation is available [here](https://sampreet.github.io/qom-docs).
-
-### Running the Scripts
-
-To run the scripts, navigate *inside* the top-level directory, `ROOT_DIR`, and execute:
+To run the scripts, navigate *inside* the top-level directory, and execute:
 
 ```bash
 python scripts/bar/baz.py
 ```
 
-Here, `bar` is the name of the folder inside `scripts` and `baz.py` is the name of the script (refer to the repository structure).
+Here, `bar` is the name of the folder (containing the version information) inside `scripts` and `baz.py` is the name of the script (refer to the repository structure).

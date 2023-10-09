@@ -24,9 +24,7 @@ params = {
         'ode_method': 'vode',
         't_min': 0.0,
         't_max': 1000.0,
-        't_dim': 10001,
-        't_range_min': 0,
-        't_range_max': 10000,
+        't_dim': 10001
     },
     'system': {
         'A_l': 52.0,

@@ -16,7 +16,7 @@ from systems.Bidirectional import Bi_00
 params = {
     'looper': {
         'show_progress': True,
-        'file_path_prefix':'data/v3.0_qom-v1.0.0/4a',
+        'file_path_prefix':'data/v3.0_qom-v1.0.1/4a',
         'X': {
             'var': 'delta',
             'min': -0.02,
@@ -66,7 +66,8 @@ params = {
         'y_ticks_minor': [i * 0.0075 for i in range(11)],
         'show_cbar': True,
         'cbar_title': '$\\langle S_{p} \\rangle$',
-        'cbar_ticks': [0.0, 0.1, 0.2]
+        'cbar_ticks': [0.0, 0.1, 0.2],
+        'width': 5.5
     }
 }
 
