@@ -26,7 +26,7 @@ synchronization phase transition.
 
 * [Adiabatic Elimination in the Bidirectional Configuration](notebooks/bidirectional_adiabatic_elimination.ipynb)
 * [Adiabatic Elimination in the Unidirectional Configuration](notebooks/unidirectional_adiabatic_elimination.ipynb)
-* [Plots in the Latest Version of the Manuscript](notebooks/v3.0_qom-v1.0.0/plots.ipynb)
+* [Plots in the Latest Version of the Manuscript](notebooks/v3.0_qom-v1.0.1/plots.ipynb)
 
 ## Structure of the Repository
 

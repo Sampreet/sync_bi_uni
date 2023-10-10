@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/10/10 - 00 - Updated README
+> Toolbox version 1.0.1
+* Updated `README`.
+
 ## 2023/10/09 - 00 - Version Upgrade
 > Toolbox version 1.0.1
 * Upgraded notebooks and scripts.
