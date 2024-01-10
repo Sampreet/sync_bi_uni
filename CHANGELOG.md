@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024/01/10 - 00 - Minor Edits
+> Toolbox version 1.0.1
+* Minor edits to notebooks, scripts and system.
+* Updated `README`.
+
 ## 2023/10/10 - 00 - Updated README
 > Toolbox version 1.0.1
 * Updated `README`.

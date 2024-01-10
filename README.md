@@ -4,13 +4,23 @@
 [![Toolbox Version](https://img.shields.io/badge/qom-v1.0.1-red?style=for-the-badge)](https://sampreet.github.io/qom-docs/v1.0.1)
 [![Last Updated](https://img.shields.io/github/last-commit/sampreet/sync_bi_uni?style=for-the-badge)](https://github.com/sampreet/sync_bi_uni/blob/master/CHANGELOG.md)
 
-> A collection of all data and scripts for J. Phys. Commun 5, 115006 (2021).
+> J. Phys. Commun 5, 115006 (2021)
 
 Author | Affiliation
 ------------ | -------------
 [Sampreet Kalita](https://www.iitg.ac.in/stud/sampreet/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
 [Subhadeep Chakraborty](https://scholar.google.co.in/citations?user=o5n-rDUAAAAJ&hl=en) | Indian Institute of Science Education and Research Kolkata, Nadia-741246, India
 [Amarendra Kumar Sarma](https://www.iitg.ac.in/aksarma/) | Indian Institute of Technology Guwahati, Guwahati-781039, India
+
+Contributing Part | SK | SC
+------------ | ------------ | -------------
+Literature review | 40% | 60%
+Idea and formulation | 20% | 80%
+Derivations of expressions | 70% | 30%
+Parameter sweeping | 40% | 60%
+Illustrations and plots | 80% | 20%
+Results and discussion | 60% | 40%
+Manuscript preparation | 40% | 60%
 
 ## About the Work
 

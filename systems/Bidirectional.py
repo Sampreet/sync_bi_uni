@@ -6,7 +6,7 @@
 __authors__ = ["Sampreet Kalita"]
 __toolbox__ = 'qom-v1.0.1'
 __created__ = "2020-06-03"
-__updated__ = "2023-10-10"
+__updated__ = "2024-01-09"
 
 # dependencies
 import numpy as np
@@ -15,26 +15,39 @@ import numpy as np
 from qom.systems import BaseSystem
 
 class Bi_00(BaseSystem):
-    """Class to simulate two simple bidirectionally-coupled QOM systems.
+    r"""Class to simulate two simple bidirectionally-coupled QOM systems.
 
     Parameters
     ----------
     params : dict
-        Parameters for the system.
+        Parameters for the system. The system parameters are:
+        ============    ====================================================================
+        key             meaning
+        ============    ====================================================================
+        A_l             (*float*) amplitude of the laser :math:`A_{l}`. Default is :math:`52.0`.
+        Delta_0_sign    (*float*) sign of the laser detuning. Default is :math:`1.0`.
+        delta           (*float*) normalized detuning of the right mechanical mode from the left, :math:`\delta = \omega_{mR} / \omega_{mL} - 1`. Default is :math:`0.01`.
+        g_0s            (*list*) normalized optomechanical coupling strengths, in the format :math:`\left[ g_{0L}, g_{0R} \right]`. Default is :math:`\left[ 0.005, 0.005 \right]`.
+        gammas          (*list*) normalized mechanical decay rates, in the format :math:`\left[ \gamma_{L}, \gamma_{R} \right]`. Default is :math:`\left[ 0.005, 0.005 \right]`.
+        kappas          (*list*) normalized optical decay rates, in the format :math:`\left[ \kappa_{L}, \kappa_{R} \right]`. Default is :math:`\left[ 0.15, 0.15 \right]`.
+        lambda          (*float*) normalized coupling strength of the optical channel :math:`\lambda`. Default is :math:`0.075`.
+        n_ths           (*list*) thermal occupancies of the mechanical modes, :math:`\left[ n_{thL}, n_{thR} \right]`. Default is :math:`\left[ 0.005, 0.005 \right]`.
+        omega_mL        (*float*) normalized frequency of the left mechanical mode :math:`\omega_{mL}`. Default is :math:`1.0`.
+        ============    ====================================================================
     cb_update : callable, optional
         Callback function to update status and progress, formatted as ``cb_update(status, progress, reset)``, where ``status`` is a string, ``progress`` is a float and ``reset`` is a boolean.
     """
 
     system_defaults = {
-        'A_l': 52.0,
-        'Delta_0_sign': 1.0,
-        'delta': 0.01,
-        'g_0s': [0.005, 0.005],
-        'gammas': [0.005, 0.005],
-        'kappas': [0.15, 0.15],
-        'lambda': 0.075,
-        'n_ths': [0.0, 0.0],
-        'omega_mL': 1.0
+        'A_l'           : 52.0,
+        'Delta_0_sign'  : 1.0,
+        'delta'         : 0.01,
+        'g_0s'          : [0.005, 0.005],
+        'gammas'        : [0.005, 0.005],
+        'kappas'        : [0.15, 0.15],
+        'lambda'        : 0.075,
+        'n_ths'         : [0.0, 0.0],
+        'omega_mL'      : 1.0
     }
 
     def __init__(self, params={}, cb_update=None):
