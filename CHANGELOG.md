@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024/01/15 - 00 - Renamed Notebooks
+> Toolbox version 1.0.1
+* Renamed notebooks.
+* Updated `README`.
+
 ## 2024/01/10 - 00 - Minor Edits
 > Toolbox version 1.0.1
 * Minor edits to notebooks, scripts and system.

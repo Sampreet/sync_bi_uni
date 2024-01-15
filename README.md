@@ -34,8 +34,8 @@ synchronization phase transition.
 
 ## Notebooks
 
-* [Adiabatic Elimination in the Bidirectional Configuration](notebooks/bidirectional_adiabatic_elimination.ipynb)
-* [Adiabatic Elimination in the Unidirectional Configuration](notebooks/unidirectional_adiabatic_elimination.ipynb)
+* [Adiabatic Elimination in the Simple Bidirectionally-coupled Configuration (Bi_00)](notebooks/bi_00_adiabatic_elimination.ipynb)
+* [Adiabatic Elimination in the Simple Unidirectionally-coupled Configuration (Uni_00)](notebooks/uni_00_adiabatic_elimination.ipynb)
 * [Plots in the Latest Version of the Manuscript](notebooks/v3.0_qom-v1.0.1/plots.ipynb)
 
 ## Structure of the Repository
@@ -73,7 +73,7 @@ ROOT_DIR/
 └───README.md
 ```
 
-Here, `foo` represents the module or system and `bar` represents the version.
+Here, `foo` represents the module or class and `bar` represents the version.
 
 ## Installing Dependencies
 
